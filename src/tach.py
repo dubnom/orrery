@@ -2,7 +2,6 @@ from gpiozero import Button
 from signal import pause
 import time
 from datetime import datetime, timedelta
-import paho.mqtt.publish as publish
 import requests
 from threading import Thread
 import logging

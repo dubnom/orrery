@@ -1,2 +1,2 @@
-cd /home/dubnom/orrery
+cd /home/orrery/orrery
 src/server.py
