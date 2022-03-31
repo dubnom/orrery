@@ -17,17 +17,6 @@
 		color: #FFF;
 	}
 
-	.divs {
-  		border: 2px outset yellow;
-    	background-color: #222;
-	  	text-align: center;
-	}
-
-	.status {
-  		border: 2px outset lightgreen;
-    	background-color: #181818;
-	}
-
 	input.large {
 		color: #FFF;
 		background-color: #C55;
@@ -52,7 +41,7 @@
 	}
 </style>
 <body style="background-color:#111;">
-	<link href='electrolize.css' rel='stylesheet' type='text/css'>
+	<link href='/electrolize.css' rel='stylesheet' type='text/css'>
 	<div id="icon"><a href="/"><img src="/data/icon-orbit.png"></a></div>
 	<div id="clock">
 	</div>
@@ -70,28 +59,6 @@
 					<input type="button" value="Now" onclick="now()"/>
 					<input type="button" value="Reset Now" onclick="resetnow()"/>
 				</td>
-			</tr>
-		</table>
-	</div>
-	<div id="status" class="status">
-	</div>
-	<div id="speed" class="speed">
-		<input type="range" min="48" max="6400" class="slider" id="mySpeed">
-	</div>
-	<div id="settings" class="divs">
-		<table id="set_table">
-			<tr>
-				<td>Maximum Speed</td>
-				<td><input id="max_speed" type="text"/></td>
-				<td>(steps per second)</td>
-			</tr>
-			<tr>
-				<td>Current</td>
-				<td><input id="current" type="text"/></td>
-				<td>(amps)</td>
-			</tr>
-			<tr>
-				<td colspan=3 align='center'><input id="apply_settings" type="button" value="Apply Settings" onclick="setSettings()"/></td>
 			</tr>
 		</table>
 	</div>
@@ -144,62 +111,11 @@
             c.textContent = time;
 		}
 
-		fields = [
-				['Operational State', 'op_state'],
-				['Error Status', 'error_status'],
-				['Maximum Speed', 'max_speed'],
-				['Voltage', 'vin'],
-				['Current', 'current'],
-				['Current Position', 'cur_pos'],
-				['Target Position', 'target_pos']
-				];
-
-		function updateTable(data) {
-            c = document.getElementById("status");
-            fontSize = c.style.fontSize;
-
-			t = document.createElement('table');
-			t.style.fontFamily = 'Electrolize';
-			t.style.width = '70%';
-			t.margin = 10;
-			t.align = 'center';
-			for ([name, key] of fields) {
-				tr = t.insertRow();
-				tc = tr.insertCell();
-				tc.textContent = name;
-				tc = tr.insertCell();
-				value = data[key][0];
-				units = data[key][1];
-				if (value >= 1000)
-					value = value.toLocaleString();
-				tc.textContent = value;
-				tc.style.textAlign = 'right';
-				tc = tr.insertCell();
-				if (units.length)
-					tc.textContent = '(' + units + ')';
-			}
-			document.getElementById('status').replaceChildren(t);
-		}
-
 		function updateAnalytics(data) {
 			seconds = Math.abs(data.cur_pos[0] - data.target_pos[0]) / data.max_speed[0];
 			minutes = Math.floor(seconds / 60);
 			seconds = Math.floor(seconds % 60);
 			document.getElementById('analytics').innerHTML = minutes + ' minutes, ' + seconds + ' seconds to destination';
-		}
-
-		function getSettings() {
-			postData('/orrery/api/getsettings').then(settings => {
-					document.getElementById('max_speed').value = settings['maxSpeed'] / 10000;
-					document.getElementById('current').value = settings['current'];
-			});
-		}
-
-		function setSettings() {
-				postData('/orrery/api/setsettings', {"settings": {
-						"maxSpeed": Math.floor(parseFloat(document.getElementById('max_speed').value)*10000),
-						"current": parseFloat(document.getElementById('current').value)
-				}});
 		}
 
 		moveTable = ['Steps', 'Days', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
@@ -250,14 +166,6 @@
 			analytics.style.fontFamily = 'Electrolize';
 			analytics.style.textAlign = 'center';
 
-			settings = document.getElementById('settings');
-			settings.style.width = wh;
-			settings.style.fontFamily = 'Electrolize';
-			t = document.getElementById('set_table');
-			t.style.fontFamily = 'Electrolize';
-			t.style.width = wh;
-			t.align = 'center';
-
 			let controls = document.getElementById('controls');
 			controls.style.width = wh;
 			controls.style.fontFamily = 'Electrolize';
@@ -267,11 +175,6 @@
 			lcontrols.style.width = wh;
 			lcontrols.style.fontFamily = 'Electrolize';
 			lcontrols.align = 'center';
-
-			let status = document.getElementById('status');
-			status.style.width = wh;
-			status.style.fontFamily = 'Electrolize';
-			status.align = 'center';
 
 			let clockControl = document.getElementById('clock');
 			clockControl.style.width = wh;
@@ -285,11 +188,8 @@
 			resize();
 			document.body.onresize = resize;
 	    	
-			getSettings();
-
 			function mainLoop() {
             	postData('/orrery/api/status').then(data => {
-					updateTable(data.status);
 					updateAnalytics(data.status);
 					if (data.state.state == 'moving')
 						color = "#FFFF00";

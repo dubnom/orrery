@@ -16,6 +16,14 @@ def redirection():
 def redirection():
     return redirect('/orrery/src/data/admin.html')
 
+@route('/expert')
+def redirection():
+    return redirect('/orrery/src/data/expert.html')
+
+@route('/favicon.ico')
+def favicon():
+    return static_file('favicon.ico', root='data')
+
 @route('/images/<filename>')
 @route('/orrery/src/images/<filename>')
 def server_static(filename):
@@ -30,9 +38,8 @@ def server_static(filename):
 def server_static(filename):
     return static_file(filename, root='data')
 
-@route('/fonts/<filename:re:.*\\.woff>')
+@route('/fonts/<filename:re:.*\\.woff.*>')
 def server_static(filename):
-    print(filename)
     return static_file(filename, root='data/fonts')
 
 @get('/orrery/api/planetPositions')
@@ -103,7 +110,7 @@ def timeTravel():
 if __name__ == "__main__":
     orrery = Orrery()
     try:
-        run(host='0.0.0.0',port=8080,debug=True)
+        run(host='0.0.0.0',port=80,debug=True)
     finally:
         orrery.halt()
         orrery.deenergize()

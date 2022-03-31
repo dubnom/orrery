@@ -28,6 +28,10 @@ planetInfo = {
         'Neptune': (60190, 29.9449, 5.9957, 0, 0, 8),
         }
 
+# The orrery supports simple circular orbits.
+# The location of the planets (and Starman) can be calculated by taking a starting point,
+# the 'epoch' and incorporating the orbital rate * elapsed time.
+# StarMan requires an extra offset (x,y) to handle its offset from the sun.
 epoch = datetime(2018,2,6)
 def planetLocation(name, t):
     daysPerYear, radius, aOffset, xOffset, yOffset, pn = planetInfo[name]
@@ -54,7 +58,7 @@ class Settings():
         except (FileNotFoundError, JSONDecodeError):
             self.settings = {
                     'maxSpeed': 32000000,
-                    'current': .343,
+                    'current': .495,
                     }
 
     def set(self, settings):

@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+killall wpa_supplicant
+ifconfig wlan0 down
+ifconfig wlan0 192.168.25.100 netmask 255.255.255.0 up
+ip address add 192.168.25.100/24 dev wlan0
+service dnsmasq start
+hostapd /etc/hostapd/hostapd.conf &
