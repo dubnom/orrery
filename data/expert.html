@@ -39,6 +39,10 @@
 		width: 32px;
 		height: 32px;
 	}
+
+	.slider {
+		width: 80%;
+	}
 </style>
 <body style="background-color:#111;">
 	<link href='/electrolize.css' rel='stylesheet' type='text/css'>
@@ -48,6 +52,10 @@
 	<div id="analytics">
 	</div>
 	<div id="controls">
+	</div>
+	<div id="speed_div" class="speed_div">
+		<div id="speed_title">Speed (days per second)</div>
+		<input type="range" min="1" max="180" class="slider" id="speed" oninput="speedChange()">
 	</div>
 	<div id="live_controls">
 		<table>
@@ -103,6 +111,13 @@
 
 		function resetnow() {
 			postData('/orrery/api/resetnow');
+		}
+
+		function speedChange() {
+			var c = document.getElementById("speed");
+			var t = document.getElementById("speed_title");
+			var speed = parseInt(c.value);
+			t.innerHTML = 'Speed ' + speed + ' (days per second)';
 		}
 
 		function updateClock(time, color) {
@@ -171,6 +186,11 @@
 			controls.style.fontFamily = 'Electrolize';
 			controls.align = 'center';
 
+			let speed = document.getElementById('speed_div');
+			speed.style.width = wh;
+			speed.style.fontFamily = 'Electrolize';
+			speed.align = 'center';
+
 			let lcontrols = document.getElementById('live_controls');
 			lcontrols.style.width = wh;
 			lcontrols.style.fontFamily = 'Electrolize';
@@ -182,12 +202,13 @@
 			clockControl.style.fontSize = fontPct;
 			clockControl.style.textAlign = 'center';
 		}
+
 		function main() {
 			makeControls();
 				
 			resize();
 			document.body.onresize = resize;
-	    	
+
 			function mainLoop() {
             	postData('/orrery/api/status').then(data => {
 					updateAnalytics(data.status);
