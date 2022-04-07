@@ -48,6 +48,10 @@ class Settings():
     """
     Motor control settings.
     """
+    _defaults = {
+        'maxSpeed': 32000000,
+        'current': .495,
+    }
 
     def __init__(self, fileName, tic):
         self._fileName = fileName
@@ -56,15 +60,15 @@ class Settings():
             with open(self._fileName, 'r') as f:
                 self.settings = json.load(f)
         except (FileNotFoundError, JSONDecodeError):
-            self.settings = {
-                    'maxSpeed': 32000000,
-                    'current': .495,
-                    }
+            self.settings = self._defaults
 
     def set(self, settings):
-        self.settings = settings
-        self._tic.setMaxSpeed( settings['maxSpeed'] )
-        self._tic.setCurrentLimit( t500_lookupCurrent( settings['current'] )) 
+        print(settings)
+        if 'maxSpeed' in settings:
+            self._tic.setMaxSpeed( settings['maxSpeed'] )
+        if 'current' in settings:
+            self._tic.setCurrentLimit( t500_lookupCurrent( settings['current'] )) 
+        self.settings.update(settings)
         with open(self._fileName, 'w') as f:
             json.dump(self.settings, f)
             f.flush()

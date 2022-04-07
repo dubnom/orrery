@@ -118,6 +118,8 @@
 			var t = document.getElementById("speed_title");
 			var speed = parseInt(c.value);
 			t.innerHTML = 'Speed ' + speed + ' (days per second)';
+			var stepsPerSecond = Math.floor(speed * 3200 * 10000 / 88);
+			postData('/orrery/api/setsettings', {"settings": {"maxSpeed": stepsPerSecond}});
 		}
 
 		function updateClock(time, color) {

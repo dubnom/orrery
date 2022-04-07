@@ -58,8 +58,6 @@
 	</div>
 	<div id="analytics">
 	</div>
-	<div id="controls">
-	</div>
 	<div id="live_controls">
 		<table>
 			<tr>
@@ -78,17 +76,35 @@
 	<div id="settings" class="divs">
 		<table id="set_table">
 			<tr>
-				<td>Maximum Speed</td>
-				<td><input id="max_speed" type="text"/></td>
-				<td>(steps per second)</td>
+				<th colspan=2>Orrery Settings</th>
+			</tr>
+			<tr>
+				<td>Speed</td>
+				<td><input id="max_speed" type="text"/> (days per second)</td>
 			</tr>
 			<tr>
 				<td>Current</td>
-				<td><input id="current" type="text"/></td>
-				<td>(amps)</td>
+				<td><input id="current" type="text"/> (amps)</td>
 			</tr>
 			<tr>
-				<td colspan=3 align='center'><input id="apply_settings" type="button" value="Apply Settings" onclick="setSettings()"/></td>
+				<th colspan=2>WiFi</th>
+			</tr>
+			<tr>
+				<td>Mode</td>
+				<td><input id="wifi_client" type="radio" value="client" checked><label for="wifi_client">Connect as a Client</label>
+					<input id="wifi_server" type="radio" value="server"><label for="wifi_server">Run as Access Point</label>
+				</td>
+			</tr>
+			<tr>
+				<td>Name</td>
+				<td><input id="wifi_name" type="text" size="50"/></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input id="wifi_password" type="password" size="50" autocomplete="current-password"/></td>
+			</tr>
+			<tr>
+				<td colspan=2 align='center'><input id="apply_settings" type="button" value="Apply Settings" onclick="setSettings()"/></td>
 			</tr>
 		</table>
 	</div>
@@ -109,10 +125,6 @@
 					headers: {'Content-Type': 'application/json'},
 					body: JSON.stringify(data)});
 			return await response.json();
-		}
-
-		function move(amt, typ) {
-			postData('/orrery/api/move', {'amt': amt, 'typ': typ});
 		}
 
 		function halt() {
@@ -144,7 +156,7 @@
 		fields = [
 				['Operational State', 'op_state'],
 				['Error Status', 'error_status'],
-				['Maximum Speed', 'max_speed'],
+				['Speed', 'max_speed'],
 				['Voltage', 'vin'],
 				['Current', 'current'],
 				['Current Position', 'cur_pos'],
@@ -187,7 +199,7 @@
 
 		function getSettings() {
 			postData('/orrery/api/getsettings').then(settings => {
-					document.getElementById('max_speed').value = settings['maxSpeed'] / 10000;
+					document.getElementById('max_speed').value = Math.round(88 * ((settings['maxSpeed'] / 10000) / 3200));
 					document.getElementById('current').value = settings['current'];
 			});
 		}
@@ -197,43 +209,6 @@
 						"maxSpeed": Math.floor(parseFloat(document.getElementById('max_speed').value)*10000),
 						"current": parseFloat(document.getElementById('current').value)
 				}});
-		}
-
-		moveTable = ['Steps', 'Days', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
-
-		amounts = [
-				[-100, 	'large'],
-				[-10, 	'medium'],
-				[-1, 	'small'],
-				[0,		'none'],
-				[1,		'small'],
-				[10,	'medium'],
-				[100,	'large']
-				];
-
-		function makeControls() {
-			t = document.createElement('table');
-			t.style.fontFamily = 'Electrolize';
-			t.align = 'center';
-			for (name of moveTable) {
-				tr = t.insertRow();
-				for ([amt, className] of amounts) { 
-					tc = tr.insertCell();
-					if (amt == 0) {
-						tc.textContent = name;
-						tc.align = 'center';
-					}
-					else {
-						butt = document.createElement('input');
-						butt.type = 'button';
-						butt.value = amt;
-						butt.className = className;
-						butt.onclick = new Function( "move("+amt+",'"+name+"')");
-						tc.replaceChildren(butt);
-					}
-				}
-			}
-			document.getElementById('controls').replaceChildren(t);
 		}
 
 		function resize() {
@@ -255,11 +230,6 @@
 			t.style.width = wh;
 			t.align = 'center';
 
-			let controls = document.getElementById('controls');
-			controls.style.width = wh;
-			controls.style.fontFamily = 'Electrolize';
-			controls.align = 'center';
-
 			let lcontrols = document.getElementById('live_controls');
 			lcontrols.style.width = wh;
 			lcontrols.style.fontFamily = 'Electrolize';
@@ -277,8 +247,6 @@
 			clockControl.style.textAlign = 'center';
 		}
 		function main() {
-			makeControls();
-				
 			resize();
 			document.body.onresize = resize;
 	    	
