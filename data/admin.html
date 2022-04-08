@@ -91,8 +91,8 @@
 			</tr>
 			<tr>
 				<td>Mode</td>
-				<td><input id="wifi_client" type="radio" value="client" checked><label for="wifi_client">Connect as a Client</label>
-					<input id="wifi_server" type="radio" value="server"><label for="wifi_server">Run as Access Point</label>
+				<td><input id="wifi_client" type="radio" name="wifi_mode" value="client" checked><label for="wifi_client">Connect as a Client</label>
+					<input id="wifi_server" type="radio" name="wifi_mode" value="server"><label for="wifi_server">Run as Access Point</label>
 				</td>
 			</tr>
 			<tr>
@@ -101,7 +101,15 @@
 			</tr>
 			<tr>
 				<td>Password</td>
-				<td><input id="wifi_password" type="password" size="50" autocomplete="current-password"/></td>
+				<td><input id="wifi_pass" type="password" size="50" autocomplete="current-password"/></td>
+			</tr>
+			<tr>
+				<td>Country code</td>
+				<td><div id="wifi_country_div"></div></td>
+			</tr>
+			<tr>
+				<td>Channel</td>
+				<td><input id="wifi_channel" type="number" min="0" max="12"/></td>
 			</tr>
 			<tr>
 				<td colspan=2 align='center'><input id="apply_settings" type="button" value="Apply Settings" onclick="setSettings()"/></td>
@@ -117,6 +125,19 @@
 		}).catch(function(error) {
 		});
 	</script>
+	<script>
+		function radioGetValue(name) {
+			for (ele of document.getElementsByName(name))
+				if (ele.checked)
+					return (ele.value);
+			return ('');
+		}
+		
+		function radioSetValue(name, value) {
+			for (ele of document.getElementsByName(name))
+				ele.checked = (ele.value == value);
+		}
+	</script>							
 	<script>
 		// Communications with the orrery
         async function postData(url='', data={}) {
@@ -201,14 +222,38 @@
 			postData('/orrery/api/getsettings').then(settings => {
 					document.getElementById('max_speed').value = Math.round(88 * ((settings['maxSpeed'] / 10000) / 3200));
 					document.getElementById('current').value = settings['current'];
+					radioSetValue('wifi_mode', settings['wifi_mode']);
+					document.getElementById('wifi_name').value = settings['wifi_name'];
+					document.getElementById('wifi_pass').value = settings['wifi_pass'];
+					a = "document.getElementById('wifi_country').value = settings['wifi_country']";
+					document.getElementById('wifi_channel').value = settings['wifi_channel'];
 			});
 		}
 
 		function setSettings() {
 				postData('/orrery/api/setsettings', {"settings": {
-						"maxSpeed": Math.floor(parseFloat(document.getElementById('max_speed').value)*10000),
-						"current": parseFloat(document.getElementById('current').value)
+						"maxSpeed": Math.floor((parseFloat(document.getElementById('max_speed').value)/88)*3200*10000),
+						"current": parseFloat(document.getElementById('current').value),
+						"wifi_mode": radioGetValue('wifi_mode'),
+						"wifi_name": document.getElementById('wifi_name').value,
+						"wifi_pass": document.getElementById('wifi_pass').value,
+						"wifi_country": document.getElementById('wifi_country').value,
+						"wifi_channel": document.getElementById('wifi_channel').value
 				}});
+		}
+
+		function getCountries() {
+				postData('/countries').then(countries => {
+						var select = document.createElement("select");
+						select.name = "wifi_country";
+						select.id = "wifi_country";
+						for (let country of countries) {
+							var option = document.createElement('option');
+							option.value = country[0];
+							option.text  = country[1] + ' (' + country[0] + ')';
+							select.appendChild(option);}
+						document.getElementById('wifi_country_div').appendChild(select);
+				})
 		}
 
 		function resize() {
@@ -247,6 +292,8 @@
 			clockControl.style.textAlign = 'center';
 		}
 		function main() {
+			getCountries();
+
 			resize();
 			document.body.onresize = resize;
 	    	

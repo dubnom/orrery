@@ -42,6 +42,12 @@ def server_static(filename):
 def server_static(filename):
     return static_file(filename, root='data/fonts')
 
+@get('/countries')
+@post('/countries')
+def get_countries():
+    from pycountry import countries
+    return json.dumps([(c.alpha_2,c.name) for c in countries])
+
 @get('/orrery/api/planetPositions')
 @post('/orrery/api/planetPositions')
 def getPlanetPositions():

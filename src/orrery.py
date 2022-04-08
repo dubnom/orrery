@@ -51,6 +51,11 @@ class Settings():
     _defaults = {
         'maxSpeed': 32000000,
         'current': .495,
+        'wifi_mode': 'server',
+        'wifi_name': 'orrery',
+        'wifi_pass': 'youranus',
+        'wifi_country': 'US',
+        'wifi_channel': 10,
     }
 
     def __init__(self, fileName, tic):
@@ -61,14 +66,21 @@ class Settings():
                 self.settings = json.load(f)
         except (FileNotFoundError, JSONDecodeError):
             self.settings = self._defaults
+            self._save()
 
     def set(self, settings):
         print(settings)
-        if 'maxSpeed' in settings:
+        if 'maxSpeed' in settings and settings['maxSpeed'] != self.settings['maxSpeed']:
             self._tic.setMaxSpeed( settings['maxSpeed'] )
-        if 'current' in settings:
-            self._tic.setCurrentLimit( t500_lookupCurrent( settings['current'] )) 
+        if 'current' in settings and settings['current'] != self.settings['current']:
+            self._tic.setCurrentLimit( t500_lookupCurrent( settings['current'] ))
+        # FIX: Do something with wifi settings!
+
+        # Save the settings
         self.settings.update(settings)
+        self._save()
+
+    def _save(self):
         with open(self._fileName, 'w') as f:
             json.dump(self.settings, f)
             f.flush()
