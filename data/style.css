@@ -1,0 +1,68 @@
+	html, body {
+    	height: 100%;
+	}
+
+	html {
+   		display: table;
+    	margin: auto;
+	}
+
+	body {
+    	display: table-cell;
+    	vertical-align: middle;
+		color: #FFF;
+	}
+
+	.divs {
+  		border: 2px outset yellow;
+    	background-color: #222;
+	  	text-align: center;
+	}
+
+	.status {
+  		border: 2px outset lightgreen;
+    	background-color: #181818;
+	}
+
+	input.large {
+		color: #FFF;
+		background-color: #C55;
+	}
+
+	input.medium {
+		color: #FFF;
+		background-color: #AA0;
+	}
+
+	input.small {
+		color: #FFF;
+		background-color: #0A0;
+	}
+
+	#icon1 img {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		width: 32px;
+		height: 32px;
+	}
+
+	#icon2 img {
+		position: absolute;
+		top: 40px;
+		right: 8px;
+		width: 32px;
+		height: 32px;
+	}
+
+	#icon3 img {
+		position: absolute;
+		top: 72px;
+		right: 8px;
+		width: 32px;
+		height: 32px;
+	}
+
+	.icon_selected {
+		filter: blur(2px);
+	}

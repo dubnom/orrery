@@ -1,59 +1,13 @@
 <html>
 <head>
+  <title>Orrery - Admin</title>
 </head>
-<style>
-	html, body {
-    	height: 100%;
-	}
-
-	html {
-   		display: table;
-    	margin: auto;
-	}
-
-	body {
-    	display: table-cell;
-    	vertical-align: middle;
-		color: #FFF;
-	}
-
-	.divs {
-  		border: 2px outset yellow;
-    	background-color: #222;
-	  	text-align: center;
-	}
-
-	.status {
-  		border: 2px outset lightgreen;
-    	background-color: #181818;
-	}
-
-	input.large {
-		color: #FFF;
-		background-color: #C55;
-	}
-
-	input.medium {
-		color: #FFF;
-		background-color: #AA0;
-	}
-
-	input.small {
-		color: #FFF;
-		background-color: #0A0;
-	}
-
-	#icon img {
-		position: absolute;
-		top: 8px;
-		right: 8px;
-		width: 32px;
-		height: 32px;
-	}
-</style>
 <body style="background-color:#111;">
-	<link href='electrolize.css' rel='stylesheet' type='text/css'>
-	<div id="icon"><a href="/"><img src="/data/icon-orbit.png"></a></div>
+	<link href='/style.css' rel='stylesheet' type='text/css'>
+	<link href='/electrolize.css' rel='stylesheet' type='text/css'>
+	<div id="icon1"><a href="/"><img src="/data/icon-orbit.png"></a></div>
+	<div id="icon2"><a href="/expert"><img src="/data/icon-expert.png"></a></div>
+	<div id="icon3"><a href="/admin"><img src="/data/icon-admin.png" class="icon_selected"></a></div>
 	<div id="clock">
 	</div>
 	<div id="analytics">
@@ -87,29 +41,45 @@
 				<td><input id="current" type="text"/> (amps)</td>
 			</tr>
 			<tr>
-				<th colspan=2>WiFi</th>
+				<th colspan=2><hr><br>WiFi Settings</th>
 			</tr>
 			<tr>
-				<td>Mode</td>
-				<td><input id="wifi_client" type="radio" name="wifi_mode" value="client" checked><label for="wifi_client">Connect as a Client</label>
-					<input id="wifi_server" type="radio" name="wifi_mode" value="server"><label for="wifi_server">Run as Access Point</label>
+				<td>Startup Mode</td>
+				<td><input id="wifi_client" type="radio" name="wifi_mode" value="client" checked><label for="wifi_client">Client</label>
+					<input id="wifi_server" type="radio" name="wifi_mode" value="server"><label for="wifi_server">Access Point</label>
 				</td>
-			</tr>
-			<tr>
-				<td>Name</td>
-				<td><input id="wifi_name" type="text" size="50"/></td>
-			</tr>
-			<tr>
-				<td>Password</td>
-				<td><input id="wifi_pass" type="password" size="50" autocomplete="current-password"/></td>
 			</tr>
 			<tr>
 				<td>Country code</td>
 				<td><div id="wifi_country_div"></div></td>
 			</tr>
+			<tr><td colspan=2></td></tr>
+			<tr>
+				<td colspan=2><i><u>Access Point Settings</u></i></td>
+			</tr>
+			<tr>
+				<td>SSID</td>
+				<td><input id="ap_ssid" type="text" size="50"/></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input id="ap_pass" type="password" size="50" autocomplete="current-password"/></td>
+			</tr>
 			<tr>
 				<td>Channel</td>
-				<td><input id="wifi_channel" type="number" min="0" max="12"/></td>
+				<td><input id="ap_channel" type="number" min="0" max="12"/></td>
+			</tr>
+			<tr><td colspan=2></td></tr>
+			<tr>
+				<td colspan=2><i><u>Client Settings</u></i></td>
+			</tr>
+			<tr>
+				<td>SSID</td>
+				<td><input id="client_ssid" type="text" size="50"/></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+				<td><input id="client_pass" type="password" size="50" autocomplete="current-password"/></td>
 			</tr>
 			<tr>
 				<td colspan=2 align='center'><input id="apply_settings" type="button" value="Apply Settings" onclick="setSettings()"/></td>
@@ -223,10 +193,13 @@
 					document.getElementById('max_speed').value = Math.round(88 * ((settings['maxSpeed'] / 10000) / 3200));
 					document.getElementById('current').value = settings['current'];
 					radioSetValue('wifi_mode', settings['wifi_mode']);
-					document.getElementById('wifi_name').value = settings['wifi_name'];
-					document.getElementById('wifi_pass').value = settings['wifi_pass'];
+					// FIX: FINISH THIS
 					a = "document.getElementById('wifi_country').value = settings['wifi_country']";
-					document.getElementById('wifi_channel').value = settings['wifi_channel'];
+					document.getElementById('ap_ssid').value = settings['ap_ssid'];
+					document.getElementById('ap_pass').value = settings['ap_pass'];
+					document.getElementById('ap_channel').value = settings['ap_channel'];
+					document.getElementById('client_ssid').value = settings['client_ssid'];
+					document.getElementById('client_pass').value = settings['client_pass'];
 			});
 		}
 
@@ -235,10 +208,12 @@
 						"maxSpeed": Math.floor((parseFloat(document.getElementById('max_speed').value)/88)*3200*10000),
 						"current": parseFloat(document.getElementById('current').value),
 						"wifi_mode": radioGetValue('wifi_mode'),
-						"wifi_name": document.getElementById('wifi_name').value,
-						"wifi_pass": document.getElementById('wifi_pass').value,
 						"wifi_country": document.getElementById('wifi_country').value,
-						"wifi_channel": document.getElementById('wifi_channel').value
+						"ap_ssid": document.getElementById('ap_ssid').value,
+						"ap_pass": document.getElementById('ap_pass').value,
+						"ap_channel": document.getElementById('ap_channel').value,
+						"client_ssid": document.getElementById('client_ssid').value,
+						"client_pass": document.getElementById('client_pass').value
 				}});
 		}
 

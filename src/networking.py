@@ -16,8 +16,11 @@ def networkConfig(params):
 
 
 print(hostapd_conf.substitute({
-    'channel':  10,
-    'country':  'US',
-    'name':     'orrery',
-    'pass':     'youranus',
+    'wifi_mode':    'server',
+    'wifi_country': 'US',
+    'ap_channel':   10,
+    'ap_ssid':      'orrery',
+    'ap_pass':      'youranus',
+    'client_ssid':  '',
+    'client_pass':  '',
 }))
