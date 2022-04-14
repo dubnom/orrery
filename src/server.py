@@ -4,7 +4,10 @@ import socket
 import logging
 import json
 import dateparser
+import networking
 from orrery import Orrery
+from settings import *
+
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',level=logging.ERROR)
 
@@ -92,11 +95,14 @@ def resetNow():
 @get('/orrery/api/getsettings')
 @post('/orrery/api/getsettings')
 def getSettings():
-    return json.dumps(orrery.settings.settings)
+    return json.dumps(Settings().settings)
 
 @post('/orrery/api/setsettings')
 def setSettings():
-    orrery.settings.set(request.json['settings'])
+    params = request.json['settings']
+    Settings().set(params) 
+    orrery.applySettings()
+    networking.networkConfig(params)
     return json.dumps({})
 
 @post('/orrery/api/timeNow')

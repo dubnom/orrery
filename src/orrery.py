@@ -6,10 +6,10 @@ import json
 from json.decoder import JSONDecodeError
 from threading import Thread, Event
 from tic import TicController, T500_CURRENTS, t500_lookupCurrent, TicList
+from settings import *
 
 
 STATE_FILENAME = "position.json"
-SETTINGS_FILENAME = "settings.json"
 STEPS_PER_ROTATION = 400 * 8
 DAYS_IN_MERCURY_YEAR = 88
 STEPS_PER_DAY = STEPS_PER_ROTATION / DAYS_IN_MERCURY_YEAR
@@ -42,48 +42,6 @@ def planetLocation(name, t):
 
 class OrreryError(Exception):
     pass
-
-
-class Settings():
-    """
-    Motor control settings.
-    """
-    _defaults = {
-        'maxSpeed': 32000000,
-        'current': .495,
-        'wifi_mode': 'server',
-        'wifi_name': 'orrery',
-        'wifi_pass': 'youranus',
-        'wifi_country': 'US',
-        'wifi_channel': 10,
-    }
-
-    def __init__(self, fileName, tic):
-        self._fileName = fileName
-        self._tic = tic
-        try:
-            with open(self._fileName, 'r') as f:
-                self.settings = json.load(f)
-        except (FileNotFoundError, JSONDecodeError):
-            self.settings = self._defaults
-            self._save()
-
-    def set(self, settings):
-        print(settings)
-        if 'maxSpeed' in settings and settings['maxSpeed'] != self.settings['maxSpeed']:
-            self._tic.setMaxSpeed( settings['maxSpeed'] )
-        if 'current' in settings and settings['current'] != self.settings['current']:
-            self._tic.setCurrentLimit( t500_lookupCurrent( settings['current'] ))
-        # FIX: Do something with wifi settings!
-
-        # Save the settings
-        self.settings.update(settings)
-        self._save()
-
-    def _save(self):
-        with open(self._fileName, 'w') as f:
-            json.dump(self.settings, f)
-            f.flush()
 
 
 class PersistentState():
@@ -165,7 +123,12 @@ class Orrery():
         self._clockThread.start()
 
         # Settings
-        self.settings = Settings(SETTINGS_FILENAME, self._tic)
+        self.applySettings()
+
+    def applySettings(self):
+        self._settings = Settings()
+        self._tic.setMaxSpeed( self._settings.settings['maxSpeed'] )
+        self._tic.setCurrentLimit( t500_lookupCurrent( self._settings.settings['current'] ))
 
     def _timeToPosition(self, t: datetime) -> float:
         td = t - datetime(1,1,1,0,0,0)

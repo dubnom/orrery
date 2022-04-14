@@ -1,1 +1,2 @@
-/home/orrery/orrery/config/runloop.sh /home/orrery/orrery/src/server.py & 
+/home/orrery/orrery/config/runloop.sh /home/orrery/orrery/src/server.py &
+/home/orrery/orrery/src/boot.py || /home/orrery/orrery/config/accesspoint &
