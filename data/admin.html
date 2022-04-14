@@ -87,7 +87,7 @@
 			</tr>
 			<tr><td colspan=2></td></tr>
 			<tr>
-				<td colspan=2 align='center'><input id="reboot" class="reboot" type="button" value="Reboot"/></td>
+				<td colspan=2 align='center'><input id="reboot" class="reboot" type="button" value="Reboot" onclick="reboot()"/></td>
 			</tr>
 		</table>
 	</div>
@@ -141,6 +141,11 @@
 
 		function resetnow() {
 			postData('/orrery/api/resetnow');
+		}
+
+		function reboot() {
+			if (confirm("Are you sure you want to reboot?"))
+				postData('/orrery/api/reboot');
 		}
 
 		function updateClock(time, color) {

@@ -3,6 +3,7 @@ from bottle import route, get, post, default_app, run, static_file, request, red
 import socket
 import logging
 import json
+import os
 import dateparser
 import networking
 from orrery import Orrery
@@ -90,6 +91,12 @@ def resume():
 @post('/orrery/api/resetnow')
 def resetNow():
     orrery.resetNow()
+    return json.dumps({})
+
+@get('/orrery/api/reboot')
+@post('/orrery/api/reboot')
+def reboot():
+    os.system('reboot')
     return json.dumps({})
 
 @get('/orrery/api/getsettings')
