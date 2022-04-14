@@ -5,6 +5,7 @@ import logging
 import json
 import os
 import dateparser
+from pytz import all_timezones
 import networking
 from orrery import Orrery
 from settings import *
@@ -13,32 +14,30 @@ from settings import *
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',level=logging.ERROR)
 
 @route('/')
+@route('/orrery')
 def redirection():
-    return redirect('/orrery/src/data/orrery.html')
+    return redirect('/orrery.html')
 
 @route('/admin')
 def redirection():
-    return redirect('/orrery/src/data/admin.html')
+    return redirect('/admin.html')
 
 @route('/expert')
 def redirection():
-    return redirect('/orrery/src/data/expert.html')
+    return redirect('/expert.html')
 
 @route('/favicon.ico')
 def favicon():
     return static_file('favicon.ico', root='data')
 
 @route('/images/<filename>')
-@route('/orrery/src/images/<filename>')
 def server_static(filename):
     return static_file(filename, root='images')
 
+@route('/<filename:re:.*\\.html>')
 @route('/data/<filename>')
 @route('/<filename:re:.*\\.css>')
 @route('/<filename:re:.*\\.js>')
-@route('/orrery/src/data/<filename>')
-@route('/orrery/src/<filename:re:.*\\.css>')
-@route('/orrery/src/<filename:re:.*\\.js>')
 def server_static(filename):
     return static_file(filename, root='data')
 
@@ -55,62 +54,61 @@ def get_countries():
 @get('/timezones')
 @post('/timezones')
 def get_timezones():
-    from pytz import all_timezones
     return json.dumps(all_timezones)
 
-@get('/orrery/api/planetPositions')
-@post('/orrery/api/planetPositions')
+@get('/api/planetPositions')
+@post('/api/planetPositions')
 def getPlanetPositions():
     return json.dumps(orrery.planetPositions())
 
-@get('/orrery/api/status')
-@post('/orrery/api/status')
+@get('/api/status')
+@post('/api/status')
 def getStatus():
     return json.dumps(orrery.status())
 
-@post('/orrery/api/move')
+@post('/api/move')
 def move():
     amt = request.json['amt']
     typ = request.json['typ']
     orrery.moveRelative(amt, typ)
     return json.dumps({})
 
-@get('/orrery/api/halt')
-@post('/orrery/api/halt')
+@get('/api/halt')
+@post('/api/halt')
 def halt():
     orrery.halt()
     return json.dumps({})
 
-@get('/orrery/api/deenergize')
-@post('/orrery/api/deenergize')
+@get('/api/deenergize')
+@post('/api/deenergize')
 def halt():
     orrery.deenergize()
     return json.dumps({})
 
-@get('/orrery/api/resume')
-@post('/orrery/api/resume')
+@get('/api/resume')
+@post('/api/resume')
 def resume():
     orrery.resume()
     return json.dumps({})
 
-@get('/orrery/api/resetnow')
-@post('/orrery/api/resetnow')
+@get('/api/resetnow')
+@post('/api/resetnow')
 def resetNow():
     orrery.resetNow()
     return json.dumps({})
 
-@get('/orrery/api/reboot')
-@post('/orrery/api/reboot')
+@get('/api/reboot')
+@post('/api/reboot')
 def reboot():
     os.system('reboot')
     return json.dumps({})
 
-@get('/orrery/api/getsettings')
-@post('/orrery/api/getsettings')
+@get('/api/getsettings')
+@post('/api/getsettings')
 def getSettings():
     return json.dumps(Settings().settings)
 
-@post('/orrery/api/setsettings')
+@post('/api/setsettings')
 def setSettings():
     params = request.json['settings']
     Settings().set(params) 
@@ -118,13 +116,13 @@ def setSettings():
     networking.networkConfig(params)
     return json.dumps({})
 
-@post('/orrery/api/timeNow')
+@post('/api/timeNow')
 def timeNow():
     orrery.timeNow()
     return json.dumps({})
 
 
-@post('/orrery/api/timeTravel')
+@post('/api/timeTravel')
 def timeTravel():
     timeStr = request.json['time_string']
     timeDT = dateparser.parse(timeStr, settings={'RETURN_AS_TIMEZONE_AWARE': False})

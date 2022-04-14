@@ -10,9 +10,9 @@
 <body style="background-color:#111;">
 	<link href='/style.css' rel='stylesheet' type='text/css'>
 	<link href='/electrolize.css' rel='stylesheet' type='text/css'>
-	<div id="icon1"><a href="/"><img src="/data/icon-orbit.png"></a></div>
-	<div id="icon2"><a href="/expert"><img src="/data/icon-expert.png" class="icon_selected"></a></div>
-	<div id="icon3"><a href="/admin"><img src="/data/icon-admin.png"></a></div>
+	<div id="icon1"><a href="/orrery.html"><img src="/data/icon-orbit.png"></a></div>
+	<div id="icon2"><a href="/expert.html"><img src="/data/icon-expert.png" class="icon_selected"></a></div>
+	<div id="icon3"><a href="/admin.html"><img src="/data/icon-admin.png"></a></div>
 	<div id="clock">
 	</div>
 	<div id="analytics">
@@ -31,7 +31,6 @@
 					<input type="button" value="De-energize" onclick="deenergize()"/>
 					<input type="button" value="Resume" onclick="resume()"/>
 					<input type="button" value="Now" onclick="now()"/>
-					<input type="button" value="Reset Now" onclick="resetnow()"/>
 				</td>
 			</tr>
 		</table>
@@ -56,27 +55,27 @@
 		}
 
 		function move(amt, typ) {
-			postData('/orrery/api/move', {'amt': amt, 'typ': typ});
+			postData('/api/move', {'amt': amt, 'typ': typ});
 		}
 
 		function halt() {
-			postData('/orrery/api/halt');
+			postData('/api/halt');
 		}
 
 		function deenergize() {
-			postData('/orrery/api/deenergize');
+			postData('/api/deenergize');
 		}
 
 		function resume() {
-			postData('/orrery/api/resume');
+			postData('/api/resume');
 		}
 
 		function now() {
-			postData('/orrery/api/timeNow');
+			postData('/api/timeNow');
 		}
 
 		function resetnow() {
-			postData('/orrery/api/resetnow');
+			postData('/api/resetnow');
 		}
 
 		function speedChange() {
@@ -85,7 +84,7 @@
 			var speed = parseInt(c.value);
 			t.innerHTML = 'Speed ' + speed + ' (days per second)';
 			var stepsPerSecond = Math.floor(speed * 3200 * 10000 / 88);
-			postData('/orrery/api/setsettings', {"settings": {"maxSpeed": stepsPerSecond}});
+			postData('/api/setsettings', {"settings": {"maxSpeed": stepsPerSecond}});
 		}
 
 		function updateClock(time, color) {
@@ -124,12 +123,13 @@
 					if (amt == 0) {
 						tc.textContent = name;
 						tc.align = 'center';
+						tc.className = "range";
 					}
 					else {
-						butt = document.createElement('input');
-						butt.type = 'button';
-						butt.value = amt;
+						butt = document.createElement('button');
+						//butt.value = amt;
 						butt.className = className;
+						butt.innerHTML = amt;
 						butt.onclick = new Function( "move("+amt+",'"+name+"')");
 						tc.replaceChildren(butt);
 					}
@@ -178,7 +178,7 @@
 			document.body.onresize = resize;
 
 			function mainLoop() {
-            	postData('/orrery/api/status').then(data => {
+            	postData('/api/status').then(data => {
 					updateAnalytics(data.status);
 					if (data.state.state == 'moving')
 						color = "#FFFF00";

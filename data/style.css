@@ -24,43 +24,50 @@
     	background-color: #181818;
 	}
 
-	input.large {
+	.range {
+		font-size: 175%;
+	}
+
+	button.large {
 		color: #FFF;
 		background-color: #C55;
+		font-size: 175%;
 	}
 
-	input.medium {
+	button.medium {
 		color: #FFF;
 		background-color: #AA0;
+		font-size: 175%;
 	}
 
-	input.small {
+	button.small {
 		color: #FFF;
 		background-color: #0A0;
+		font-size: 175%;
 	}
 
 	#icon1 img {
 		position: absolute;
 		top: 8px;
 		right: 8px;
-		width: 32px;
-		height: 32px;
+		width: 64px;
+		height: 64px;
 	}
 
 	#icon2 img {
 		position: absolute;
-		top: 40px;
+		top: 72px;
 		right: 8px;
-		width: 32px;
-		height: 32px;
+		width: 64px;
+		height: 64px;
 	}
 
 	#icon3 img {
 		position: absolute;
-		top: 72px;
+		top: 144px;
 		right: 8px;
-		width: 32px;
-		height: 32px;
+		width: 64px;
+		height: 64px;
 	}
 
 	.icon_selected {

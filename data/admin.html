@@ -5,9 +5,9 @@
 <body style="background-color:#111;">
 	<link href='/style.css' rel='stylesheet' type='text/css'>
 	<link href='/electrolize.css' rel='stylesheet' type='text/css'>
-	<div id="icon1"><a href="/"><img src="/data/icon-orbit.png"></a></div>
-	<div id="icon2"><a href="/expert"><img src="/data/icon-expert.png"></a></div>
-	<div id="icon3"><a href="/admin"><img src="/data/icon-admin.png" class="icon_selected"></a></div>
+	<div id="icon1"><a href="/orrery.html"><img src="/data/icon-orbit.png"></a></div>
+	<div id="icon2"><a href="/expert.html"><img src="/data/icon-expert.png"></a></div>
+	<div id="icon3"><a href="/admin.html"><img src="/data/icon-admin.png" class="icon_selected"></a></div>
 	<div id="clock">
 	</div>
 	<div id="analytics">
@@ -42,7 +42,7 @@
 			</tr>
 			<tr>
 				<td>Time zone</td>
-				<td><div id="timezone_div"></div></td>
+				<td><select id="timezone" name="timezone"></select></td>
 			</tr>
 			<tr>
 				<th colspan=2><hr><br>WiFi Settings</th>
@@ -56,7 +56,7 @@
 			</tr>
 			<tr>
 				<td>Country code</td>
-				<td><div id="wifi_country_div"></div></td>
+				<td><select id="wifi_country" name="wifi_country"></select></td>
 			</tr>
 			<tr><td colspan=2></td></tr>
 			<tr>
@@ -117,12 +117,8 @@
 				ele.checked = (ele.value == value);
 		}
 
-		function selectGetValue(name) {
-			return(docment.querySelector(name).value);
-		}
-
-		function selectSetValue(name, value) {
-			document.querySelector(name).value = value;
+		function sleep(ms) {
+		    return new Promise(resolve => setTimeout(resolve, ms));
 		}
 	</script>							
 	<script>
@@ -136,28 +132,28 @@
 		}
 
 		function halt() {
-			postData('/orrery/api/halt');
+			postData('/api/halt');
 		}
 
 		function deenergize() {
-			postData('/orrery/api/deenergize');
+			postData('/api/deenergize');
 		}
 
 		function resume() {
-			postData('/orrery/api/resume');
+			postData('/api/resume');
 		}
 
 		function now() {
-			postData('/orrery/api/timeNow');
+			postData('/api/timeNow');
 		}
 
 		function resetnow() {
-			postData('/orrery/api/resetnow');
+			postData('/api/resetnow');
 		}
 
 		function reboot() {
 			if (confirm("Are you sure you want to reboot?"))
-				postData('/orrery/api/reboot');
+				postData('/api/reboot');
 		}
 
 		function updateClock(time, color) {
@@ -211,7 +207,7 @@
 		}
 
 		function getSettings() {
-			postData('/orrery/api/getsettings').then(settings => {
+			postData('/api/getsettings').then(settings => {
 					document.getElementById('max_speed').value = Math.round(88 * ((settings['maxSpeed'] / 10000) / 3200));
 					document.getElementById('current').value = settings['current'];
 					radioSetValue('wifi_mode', settings['wifi_mode']);
@@ -226,7 +222,7 @@
 		}
 
 		function setSettings() {
-				postData('/orrery/api/setsettings', {"settings": {
+				postData('/api/setsettings', {"settings": {
 						"maxSpeed": Math.floor((parseFloat(document.getElementById('max_speed').value)/88)*3200*10000),
 						"current": parseFloat(document.getElementById('current').value),
 						"timezone": document.getElementById('timezone').value,
@@ -242,29 +238,23 @@
 
 		function getCountries() {
 				postData('/countries').then(countries => {
-						var select = document.createElement("select");
-						select.name = "wifi_country";
-						select.id = "wifi_country";
+						var select = document.getElementById("wifi_country");
 						for (let country of countries) {
 							var option = document.createElement('option');
 							option.value = country[0];
 							option.text  = country[1] + ' (' + country[0] + ')';
 							select.appendChild(option);}
-						document.getElementById('wifi_country_div').replaceChildren(select);
 				})
 		}
 
 		function getTimeZones() {
 				postData('/timezones').then(timezones => {
-						var select = document.createElement("select");
-						select.name = "timezone";
-						select.id = "timezone";
+						var select = document.getElementById("timezone");
 						for (let timezone of timezones) {
 							var option = document.createElement('option');
 							option.value = timezone;
 							option.text = timezone;
 							select.appendChild(option); }
-						document.getElementById('timezone_div').replaceChildren(select);
 				})
 		}
 
@@ -308,12 +298,11 @@
 			getTimeZones();
 
 			resize();
-			document.body.onresize = resize;
-	    	
+
 			getSettings();
 
 			function mainLoop() {
-            	postData('/orrery/api/status').then(data => {
+            	postData('/api/status').then(data => {
 					updateTable(data.status);
 					updateAnalytics(data.status);
 					if (data.state.state == 'moving')
@@ -339,6 +328,7 @@
 				
 			looper(1000);
         }
+
         main();
 	</script>
 </body>
