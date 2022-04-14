@@ -45,8 +45,9 @@
 			</tr>
 			<tr>
 				<td>Startup Mode</td>
-				<td><input id="wifi_client" type="radio" name="wifi_mode" value="client" checked><label for="wifi_client">Client</label>
+				<td>
 					<input id="wifi_server" type="radio" name="wifi_mode" value="server"><label for="wifi_server">Access Point</label>
+					<input id="wifi_client" type="radio" name="wifi_mode" value="client" checked><label for="wifi_client">Client</label>
 				</td>
 			</tr>
 			<tr>
@@ -82,7 +83,11 @@
 				<td><input id="client_pass" type="password" size="50" autocomplete="current-password"/></td>
 			</tr>
 			<tr>
-				<td colspan=2 align='center'><input id="apply_settings" type="button" value="Apply Settings" onclick="setSettings()"/></td>
+				<td colspan=2 align='center'><input id="apply_settings" class="apply" type="button" value="Apply Settings" onclick="setSettings()"/></td>
+			</tr>
+			<tr><td colspan=2></td></tr>
+			<tr>
+				<td colspan=2 align='center'><input id="reboot" class="reboot" type="button" value="Reboot"/></td>
 			</tr>
 		</table>
 	</div>

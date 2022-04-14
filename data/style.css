@@ -66,3 +66,13 @@
 	.icon_selected {
 		filter: blur(2px);
 	}
+
+	input.apply {
+		background-color: yellow;
+		color: black;
+	}
+
+	input.reboot {
+		background-color: red;
+		color: white;
+	}
