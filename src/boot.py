@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from gpiozero import Button
 from settings import Settings
-import * from networking
+from networking import *
 
 
 settings = Settings()
