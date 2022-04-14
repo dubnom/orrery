@@ -41,6 +41,10 @@
 				<td><input id="current" type="text"/> (amps)</td>
 			</tr>
 			<tr>
+				<td>Time zone</td>
+				<td><div id="timezone_div"></div></td>
+			</tr>
+			<tr>
 				<th colspan=2><hr><br>WiFi Settings</th>
 			</tr>
 			<tr>
@@ -111,6 +115,14 @@
 		function radioSetValue(name, value) {
 			for (ele of document.getElementsByName(name))
 				ele.checked = (ele.value == value);
+		}
+
+		function selectGetValue(name) {
+			return(docment.querySelector(name).value);
+		}
+
+		function selectSetValue(name, value) {
+			document.querySelector(name).value = value;
 		}
 	</script>							
 	<script>
@@ -203,8 +215,8 @@
 					document.getElementById('max_speed').value = Math.round(88 * ((settings['maxSpeed'] / 10000) / 3200));
 					document.getElementById('current').value = settings['current'];
 					radioSetValue('wifi_mode', settings['wifi_mode']);
-					// FIX: FINISH THIS
-					a = "document.getElementById('wifi_country').value = settings['wifi_country']";
+					document.getElementById('wifi_country').value = settings['wifi_country'];
+					document.getElementById('timezone').value = settings['timezone'];
 					document.getElementById('ap_ssid').value = settings['ap_ssid'];
 					document.getElementById('ap_pass').value = settings['ap_pass'];
 					document.getElementById('ap_channel').value = settings['ap_channel'];
@@ -217,6 +229,7 @@
 				postData('/orrery/api/setsettings', {"settings": {
 						"maxSpeed": Math.floor((parseFloat(document.getElementById('max_speed').value)/88)*3200*10000),
 						"current": parseFloat(document.getElementById('current').value),
+						"timezone": document.getElementById('timezone').value,
 						"wifi_mode": radioGetValue('wifi_mode'),
 						"wifi_country": document.getElementById('wifi_country').value,
 						"ap_ssid": document.getElementById('ap_ssid').value,
@@ -237,7 +250,21 @@
 							option.value = country[0];
 							option.text  = country[1] + ' (' + country[0] + ')';
 							select.appendChild(option);}
-						document.getElementById('wifi_country_div').appendChild(select);
+						document.getElementById('wifi_country_div').replaceChildren(select);
+				})
+		}
+
+		function getTimeZones() {
+				postData('/timezones').then(timezones => {
+						var select = document.createElement("select");
+						select.name = "timezone";
+						select.id = "timezone";
+						for (let timezone of timezones) {
+							var option = document.createElement('option');
+							option.value = timezone;
+							option.text = timezone;
+							select.appendChild(option); }
+						document.getElementById('timezone_div').replaceChildren(select);
 				})
 		}
 
@@ -278,6 +305,7 @@
 		}
 		function main() {
 			getCountries();
+			getTimeZones();
 
 			resize();
 			document.body.onresize = resize;

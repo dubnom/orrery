@@ -52,6 +52,12 @@ def get_countries():
     from pycountry import countries
     return json.dumps([(c.alpha_2,c.name) for c in countries])
 
+@get('/timezones')
+@post('/timezones')
+def get_timezones():
+    from pytz import all_timezones
+    return json.dumps(all_timezones)
+
 @get('/orrery/api/planetPositions')
 @post('/orrery/api/planetPositions')
 def getPlanetPositions():
