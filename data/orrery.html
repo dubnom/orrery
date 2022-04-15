@@ -368,33 +368,25 @@
 			t.setFullYear(t.getFullYear()-25); dateControl.min = dateToStr(t);
 			t.setFullYear(t.getFullYear()+50); dateControl.max = dateToStr(t);
 
-	    	function mainLoop() {
-            	postData('/api/planetPositions').then(data => {
-                	positions = data.positions;
-	            	updateChart(positions);
-	            	updateTable(positions);
-					if (data.state.state == 'moving')
-						color = "#FFFF00";
-					else if (data.state.mode == 'now')
-						color = "#00FF00";
-					else if (data.state.mode == 'travel')
-						color = "#AF00FF";
-					else
-						color = "#FF0000";
-					updateClock(data.time, color);
-				}).catch(function (error) {
-					updateClock('ERROR', "#FF0000");
-				});
-				return 1000;
+	    	function statusUpdate(event) {
+				data = JSON.parse(event.data);
+               	positions = data.positions;
+	           	updateChart(positions);
+	           	updateTable(positions);
+				if (data.state.state == 'moving')
+					color = "#FFFF00";
+				else if (data.state.mode == 'now')
+					color = "#00FF00";
+				else if (data.state.mode == 'travel')
+					color = "#AF00FF";
+				else
+					color = "#FF0000";
+				updateClock(data.time, color);
 	    	}
 
-			function looper(delay) {
-				setTimeout( function() {
-					let d=mainLoop();
-					looper(d) }, delay);
-			}
-				
-			looper(1000);
+			uri = 'ws://' + window.location.host + '/websocket/status';
+			let sock = new WebSocket(uri)
+			sock.addEventListener('message', statusUpdate)
         }
         main();
     </script>

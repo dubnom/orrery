@@ -1,0 +1,12 @@
+<head>
+</head>
+<body>
+<script>
+	function viewer(event) {
+		document.body.append(JSON.parse(event.data));
+	}
+	uri = 'ws://' + window.location.host + '/websocket/status';
+	let sock = new WebSocket(uri)
+	sock.addEventListener('message', viewer)
+</script>
+</body>

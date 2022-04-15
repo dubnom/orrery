@@ -1,8 +1,10 @@
 #!/usr/bin/python3
-from bottle import route, get, post, default_app, run, static_file, request, redirect
+from gevent import monkey; monkey.patch_all()
+from bottle import route, get, post, default_app, run, static_file, request, redirect, Bottle
 import socket
 import logging
 import json
+import time
 import os
 import dateparser
 from pytz import all_timezones
@@ -12,103 +14,104 @@ from settings import *
 
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',level=logging.ERROR)
+app = Bottle()
 
-@route('/')
-@route('/orrery')
+@app.route('/')
+@app.route('/orrery')
 def redirection():
     return redirect('/orrery.html')
 
-@route('/admin')
+@app.route('/admin')
 def redirection():
     return redirect('/admin.html')
 
-@route('/expert')
+@app.route('/expert')
 def redirection():
     return redirect('/expert.html')
 
-@route('/favicon.ico')
+@app.route('/favicon.ico')
 def favicon():
     return static_file('favicon.ico', root='data')
 
-@route('/images/<filename>')
+@app.route('/images/<filename>')
 def server_static(filename):
     return static_file(filename, root='images')
 
-@route('/<filename:re:.*\\.html>')
-@route('/data/<filename>')
-@route('/<filename:re:.*\\.css>')
-@route('/<filename:re:.*\\.js>')
+@app.route('/<filename:re:.*\\.html>')
+@app.route('/data/<filename>')
+@app.route('/<filename:re:.*\\.css>')
+@app.route('/<filename:re:.*\\.js>')
 def server_static(filename):
     return static_file(filename, root='data')
 
-@route('/fonts/<filename:re:.*\\.woff.*>')
+@app.route('/fonts/<filename:re:.*\\.woff.*>')
 def server_static(filename):
     return static_file(filename, root='data/fonts')
 
-@get('/countries')
-@post('/countries')
+@app.get('/countries')
+@app.post('/countries')
 def get_countries():
     from pycountry import countries
     return json.dumps([(c.alpha_2,c.name) for c in countries])
 
-@get('/timezones')
-@post('/timezones')
+@app.get('/timezones')
+@app.post('/timezones')
 def get_timezones():
     return json.dumps(all_timezones)
 
-@get('/api/planetPositions')
-@post('/api/planetPositions')
+@app.get('/api/planetPositions')
+@app.post('/api/planetPositions')
 def getPlanetPositions():
     return json.dumps(orrery.planetPositions())
 
-@get('/api/status')
-@post('/api/status')
+@app.get('/api/status')
+@app.post('/api/status')
 def getStatus():
     return json.dumps(orrery.status())
 
-@post('/api/move')
+@app.post('/api/move')
 def move():
     amt = request.json['amt']
     typ = request.json['typ']
     orrery.moveRelative(amt, typ)
     return json.dumps({})
 
-@get('/api/halt')
-@post('/api/halt')
+@app.get('/api/halt')
+@app.post('/api/halt')
 def halt():
     orrery.halt()
     return json.dumps({})
 
-@get('/api/deenergize')
-@post('/api/deenergize')
+@app.get('/api/deenergize')
+@app.post('/api/deenergize')
 def halt():
     orrery.deenergize()
     return json.dumps({})
 
-@get('/api/resume')
-@post('/api/resume')
+@app.get('/api/resume')
+@app.post('/api/resume')
 def resume():
     orrery.resume()
     return json.dumps({})
 
-@get('/api/resetnow')
-@post('/api/resetnow')
+@app.get('/api/resetnow')
+@app.post('/api/resetnow')
 def resetNow():
     orrery.resetNow()
     return json.dumps({})
 
-@get('/api/reboot')
-@post('/api/reboot')
+@app.get('/api/reboot')
+@app.post('/api/reboot')
 def reboot():
     os.system('reboot')
     return json.dumps({})
 
-@get('/api/getsettings')
-@post('/api/getsettings')
+@app.get('/api/getsettings')
+@app.post('/api/getsettings')
 def getSettings():
     return json.dumps(Settings().settings)
 
-@post('/api/setsettings')
+@app.post('/api/setsettings')
 def setSettings():
     params = request.json['settings']
     Settings().set(params) 
@@ -116,24 +119,41 @@ def setSettings():
     networking.networkConfig(params)
     return json.dumps({})
 
-@post('/api/timeNow')
+@app.post('/api/timeNow')
 def timeNow():
     orrery.timeNow()
     return json.dumps({})
 
-
-@post('/api/timeTravel')
+@app.post('/api/timeTravel')
 def timeTravel():
     timeStr = request.json['time_string']
     timeDT = dateparser.parse(timeStr, settings={'RETURN_AS_TIMEZONE_AWARE': False})
     orrery.timeTravel(timeDT)
     return json.dumps({})
 
+@app.route('/websocket/status')
+def websock():
+    logging.warning('WEBSOCKET begins!')
+    ws = request.environ.get('wsgi.websocket')
+    if not ws:
+        abort(400, 'Expected WebSocket request.')
+
+    try:
+        while True:
+            ws.send(json.dumps(orrery.status()))
+            time.sleep(1)
+    except WebSocketError:
+        pass
+
 
 if __name__ == "__main__":
+    from gevent.pywsgi import WSGIServer
+    from geventwebsocket import WebSocketError
+    from geventwebsocket.handler import WebSocketHandler
     orrery = Orrery()
     try:
-        run(host='0.0.0.0',port=80,debug=True)
+        server = WSGIServer(("0.0.0.0", 80), app, handler_class=WebSocketHandler)
+        server.serve_forever()
     finally:
         orrery.halt()
         orrery.deenergize()
