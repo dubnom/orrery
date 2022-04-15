@@ -1,12 +1,7 @@
 <html>
-  <title>Orrery - Expert</title>
 <head>
+  <title>Orrery - Expert</title>
 </head>
-<style>
-	.slider {
-		width: 80%;
-	}
-</style>
 <body style="background-color:#111;">
 	<link href='/style.css' rel='stylesheet' type='text/css'>
 	<link href='/electrolize.css' rel='stylesheet' type='text/css'>
@@ -36,14 +31,7 @@
 		</table>
 	</div>
 
-	<script>
-		var dispFont = new FontFace('D14MR', 'url("/fonts/DSEG14-Classic/DSEG14Classic-Regular.woff")');
-		dispFont.load().then(function(loadedFace) {
-			document.fonts.add(loadedFace);
-			document.body.style.fontFamily = '"D14MR", Electrolize';
-		}).catch(function(error) {
-		});
-	</script>
+	<script src="dofonts.js"></script>
 	<script>
 		// Communications with the orrery
         async function postData(url='', data={}) {

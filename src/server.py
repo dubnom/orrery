@@ -140,8 +140,9 @@ def websock():
 
     try:
         while True:
-            ws.send(json.dumps(orrery.status()))
-            time.sleep(1)
+            status = orrery.status()
+            ws.send(json.dumps(status))
+            time.sleep(.25 if status['state']['state'] == 'moving' else 1)
     except WebSocketError:
         pass
 
