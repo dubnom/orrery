@@ -7,8 +7,13 @@
 	<link href='/electrolize.css' rel='stylesheet' type='text/css'>
 	<div id="app_frame">
 		<div id="clock_frame">
-			<div id="orrery_time"></div>
+			<div id="orrery_time" onclick="timeTravelDialog()"></div>
 			<div id="time_to_destination"></div>
+		    <div id="time_travel">
+			   <input id="date" type="date"/>
+			   <input id="travel" type="button" value="Travel" onclick="timeTravel()"/>
+			   <input id="now" type="button" value="Now" onclick="timeNow()"/>
+			</div>
 		</div>
 		<div id="controls_frame">
 			<div id="mode_orrery">
@@ -27,8 +32,62 @@
 			</div>
 		</div>
 	</div>
+	<div>
+		<div id="icon-orrery"><img src="/data/icon-orbit.png" onclick="setMode('orrery')"></div>
+		<div id="icon-expert"><img src="/data/icon-expert.png" onclick="setMode('expert')"></div>
+		<div id="icon-admin"><img src="/data/icon-admin.png" onclick="setMode('admin')"></div>
+	</div>
 <script src='/dofonts.js'></script>
 <script src="circletext.js"></script>
+<script>
+	// Radio button utility functions
+	function radioGetValue(name) {
+		for (ele of document.getElementsByName(name))
+			if (ele.checked)
+				return (ele.value);
+		return ('');
+	}
+	
+	function radioSetValue(name, value) {
+		for (ele of document.getElementsByName(name))
+			ele.checked = (ele.value == value);
+	}
+</script>							
+<script>
+	// Communications with the orrery
+    async function postData(url='', data={}) {
+	    const response = await fetch(url, {
+				method:'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(data)});
+		return await response.json();
+	}
+
+	function halt() {
+		postData('/api/halt');
+	}
+
+	function deenergize() {
+		postData('/api/deenergize');
+	}
+
+	function resume() {
+		postData('/api/resume');
+	}
+
+	function now() {
+		postData('/api/timeNow');
+	}
+
+	function resetnow() {
+		postData('/api/resetnow');
+	}
+
+	function reboot() {
+		if (confirm("Are you sure you want to reboot?"))
+			postData('/api/reboot');
+	}
+</script>
 <script>
 	// Planets, sizes, and colors
 	let pInfo = new Map([
@@ -168,6 +227,7 @@
     }
 </script>
 <script>
+	// Expert controls
 	moveTable = ['Steps', 'Days', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
 
 	amounts = [
@@ -207,17 +267,62 @@
 	}
 </script>
 <script>
+	// Admin status display
+	fields = [
+			['Operational State', 'op_state'],
+			['Error Status', 'error_status'],
+			['Speed', 'max_speed'],
+			['Voltage', 'vin'],
+			['Current', 'current'],
+			['Current Position', 'cur_pos'],
+			['Target Position', 'target_pos']
+			];
+
+	function updateStatus(data) {
+        c = document.getElementById("status");
+        fontSize = c.style.fontSize;
+
+		t = document.createElement('table');
+		t.style.fontFamily = 'Electrolize';
+		t.style.width = '70%';
+		t.margin = 10;
+		t.align = 'center';
+		for ([name, key] of fields) {
+			tr = t.insertRow();
+			tc = tr.insertCell();
+			tc.textContent = name;
+			tc = tr.insertCell();
+			value = data.status[key][0];
+			units = data.status[key][1];
+			if (value >= 1000)
+				value = value.toLocaleString();
+			tc.textContent = value;
+			tc.style.textAlign = 'right';
+			tc = tr.insertCell();
+			if (units.length)
+				tc.textContent = '(' + units + ')';
+		}
+		document.getElementById('status').replaceChildren(t);
+	}
+</script>
+<script>
 	modes = [
-		{ 'mode': 'orrery', 'id': 'mode_orrery' },
-		{ 'mode': 'expert', 'id': 'mode_expert' },
-		{ 'mode': 'admin',  'id': 'mode_admin' }
+		{ 'mode': 'orrery', 'id': 'mode_orrery',	'icon': 'icon-orrery' },
+		{ 'mode': 'expert', 'id': 'mode_expert',	'icon': 'icon-expert' },
+		{ 'mode': 'admin',  'id': 'mode_admin',		'icon': 'icon-admin' }
 	];
 
 	function setMode(mode) {
 		for (m of modes) {
-			let el = document.getElementById(m['id']);
-			let disp = ((mode == m['mode']) ? 'block' : 'none');
-			el.style.display = disp;
+			el = document.getElementById(m['id']);
+			icon = document.getElementById(m['icon']);
+			if (mode == m['mode']) {
+				el.style.display = 'block';
+				icon.className = 'icon-selected';
+			} else {
+				el.style.display = 'none';
+				icon.className = '';
+			}
 		}
 	}
 
@@ -253,9 +358,9 @@
 		setSize("expert_buttons", fw, controls_height / 12);
 
 		// Admin mode layout
-		setSize("admin_controls", fw, controls_height / 25);
-		setSize("status", fw, controls_height * 7 / 25);
-		setSize("settings", fw, controls_height * 18 / 25);
+		setSize("admin_controls", fw, controls_height / 26);
+		setSize("status", fw, controls_height * 7 / 26);
+		setSize("settings", fw, controls_height * 18 / 26);
 	}
 
 	function updateClock(data) {
@@ -272,6 +377,11 @@
 		document.getElementById("time_to_destination").innerHTML = minutes + ' minutes, ' + seconds + ' seconds to destination';
 	}
 
+	function timeTravelDialog() {
+		el = document.getElementById('time_travel');
+		el.style.display = ((el.style.display == 'block') ? 'none' : 'block');
+	}
+
 	updateSubscribers = {};
 	function subscribe(f) {
 		updateSubscribers[f] = f;
@@ -286,6 +396,7 @@
 		subscribe(updateClock);
 		subscribe(updatePlanetarium);
 		subscribe(updateLocations);
+		subscribe(updateStatus);
 
 		function statusUpdate(event) {
 			data = JSON.parse(event.data);

@@ -47,7 +47,34 @@
 		font-size: 175%;
 	}
 
-	#icon1 img {
+	#time_travel {
+		width: 100%;
+		text-align: center;
+		position: relative;
+		z-index: 0;
+		display: none;
+	}
+
+	#date {
+		font-family: electrolize;
+		font-size: 175%;
+	}
+
+	#travel {
+		background-color: #8c03fc;
+		color: white;
+		font-family: electrolize;
+		font-size: 175%;
+	}
+
+	#now {
+		background-color: green;
+		color: white;
+		font-family: electrolize;
+		font-size: 175%;
+	}
+
+	#icon-orrery img {
 		position: absolute;
 		top: 8px;
 		right: 8px;
@@ -55,7 +82,7 @@
 		height: 64px;
 	}
 
-	#icon2 img {
+	#icon-expert img {
 		position: absolute;
 		top: 72px;
 		right: 8px;
@@ -63,7 +90,7 @@
 		height: 64px;
 	}
 
-	#icon3 img {
+	#icon-admin img {
 		position: absolute;
 		top: 144px;
 		right: 8px;
@@ -71,8 +98,9 @@
 		height: 64px;
 	}
 
-	.icon_selected {
-		filter: blur(2px);
+	.icon-selected {
+		opacity: .2;
+		//filter: blur(2px);
 	}
 
 	input.apply {
