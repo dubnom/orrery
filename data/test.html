@@ -17,7 +17,7 @@
 		</div>
 		<div id="controls_frame">
 			<div id="mode_orrery">
-				<div id="planetarium"><canvas id="planets" width-"100%" height="100%"></canvas></div>
+				<div id="planetarium"><canvas id="planets"></canvas></div>
 				<div id="locations"></div>
 			</div>
 			<div id="mode_expert">
@@ -377,11 +377,47 @@
 		document.getElementById("time_to_destination").innerHTML = minutes + ' minutes, ' + seconds + ' seconds to destination';
 	}
 
+	// Functions to handle time travel
 	function timeTravelDialog() {
 		el = document.getElementById('time_travel');
 		el.style.display = ((el.style.display == 'block') ? 'none' : 'block');
 	}
 
+    function timeTravel() {
+    	dateControl = document.getElementById("date");
+    	timeStr = dateControl.value;
+		days = Math.floor(Math.abs((Date.parse(timeStr) - Date.now()) / (86400*1000)));
+		if (days > 100 * 365.26) {
+			alert("Moving more than 100 years would take too long!");
+		}
+		else if (days <= 2 * 365.26 || confirm("Go to " + timeStr + "?")) {
+            postData('/api/timeTravel',{time_string: timeStr}).then(data => {});
+			document.getElementById('time_travel').style.display = 'none';
+	    }
+    }
+
+	function timeNow() {
+		postData('/api/timeNow').then(data => {});
+		document.getElementById('time_travel').style.display = 'none';
+	}
+
+	// Reset the dialog to today's date
+	// at the first minute of each day
+	function resetDefaultDates() {
+		function dateToStr(d) {return (d.getFullYear() + '-' +( '0'+(1+d.getMonth())).slice(-2) + '-' + ('0'+d.getDate()).slice(-2))};
+		let t = new Date();
+		dateControl = document.getElementById('date');
+		dateControl.value = dateToStr(t);
+		t.setFullYear(t.getFullYear()-25); dateControl.min = dateToStr(t);
+		t.setFullYear(t.getFullYear()+50); dateControl.max = dateToStr(t);
+
+		now = new Date();
+		millis = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 1, 0, 0) - now;
+		if (millis < 0) {millis += 86400000; }
+		setTimeout(resetDefaultDates, millis);
+	}
+
+	// Manage controls subscribing to orrery data updates
 	updateSubscribers = {};
 	function subscribe(f) {
 		updateSubscribers[f] = f;
@@ -392,7 +428,9 @@
 		document.body.onresize = resize;
 					
 		makeExpertControls();
+		resetDefaultDates();
 		setMode('orrery');
+
 		subscribe(updateClock);
 		subscribe(updatePlanetarium);
 		subscribe(updateLocations);
