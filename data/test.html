@@ -1,12 +1,120 @@
+<html>
 <head>
+  <title>Orrery - Test</title>
 </head>
 <body>
+	<link href='/style.css' rel='stylesheet' type='text/css'>
+	<div id="app_frame">
+		<div id="clock_frame">
+			<div id="orrery_time"></div>
+			<div id="time_to_destination"></div>
+		</div>
+		<div id="controls_frame">
+			<div id="mode_orrery">
+				<div id="planetarium"></div>
+				<div id="locations"></div>
+			</div>
+			<div id="mode_expert">
+				<div id="expert_controls"></div>
+				<div id="speed_slider"></div>
+				<div id="expert_buttons"></div>
+			</div>
+			<div id="mode_admin">
+				<div id="admin_controls"></div>
+				<div id="status"></div>
+				<div id="settings"></div>
+			</div>
+		</div>
+	</div>
+<script src='/dofonts.js'></script>
 <script>
-	function viewer(event) {
-		document.body.append(JSON.parse(event.data));
+	modes = [
+		{ 'mode': 'orrery', 'id': 'mode_orrery' },
+		{ 'mode': 'expert', 'id': 'mode_expert' },
+		{ 'mode': 'admin',  'id': 'mode_admin' }
+	];
+
+	function setMode(mode) {
+		for (m of modes) {
+			let el = document.getElementById(m['id']);
+			let disp = ((mode == m['mode']) ? 'block' : 'none');
+			el.style.display = disp;
+		}
 	}
-	uri = 'ws://' + window.location.host + '/websocket/status';
-	let sock = new WebSocket(uri)
-	sock.addEventListener('message', viewer)
+
+	function resize() {
+		function setSize(id, w, h, fs="100%") {
+			let el = document.getElementById(id);
+			el.style.width = w;
+			el.style.height = h;
+			el.style.fontSize = fs;
+		}
+
+		// Force an aspect ration of 16:9 (1.78, the standard)
+		let h=document.body.clientHeight;
+		let w=document.body.clientWidth;
+		let fh = h;
+		let fw = Math.min(w, h / 1.78);
+
+		let clock_height = fh * .15;
+		let controls_height = fh * .85;
+		setSize("app_frame", fw, fh);
+		setSize("clock_frame", fw, clock_height);
+		setSize("orrery_time", fw, clock_height * .75, clock_height * .75 * .45);
+		setSize("time_to_destination", fw, clock_height * .25, clock_height * .25 * .6);
+		setSize("controls_frame", fw, controls_height);
+
+		// Orrery mode layout
+		setSize("planetarium", fw, fw);
+		setSize("locations", fw, controls_height - fw);
+
+		// Expert mode layout
+		setSize("expert_controls", fw, controls_height * 10 / 12);
+		setSize("speed_slider", fw, controls_height / 12);
+		setSize("expert_buttons", fw, controls_height / 12);
+
+		// Admin mode layout
+		setSize("admin_controls", fw, controls_height / 25);
+		setSize("status", fw, controls_height * 7 / 25);
+		setSize("settings", fw, controls_height * 18 / 25);
+	}
+
+	function updateClock(data) {
+    	let el = document.getElementById("orrery_time");
+		if (data.state.state == 'moving')		el.style.color = "#FFFF00";
+		else if (data.state.mode == 'now')		el.style.color = "#00FF00";
+		else if (data.state.mode == 'travel')	el.style.color = "#AF00FF";
+		else									el.style.color = "#FF0000";
+        el.textContent = data.time;
+
+		seconds = Math.abs(data.status.cur_pos[0] - data.status.target_pos[0]) / data.status.max_speed[0];
+		minutes = Math.floor(seconds / 60);
+		seconds = Math.floor(seconds % 60);
+		document.getElementById("time_to_destination").innerHTML = minutes + ' minutes, ' + seconds + ' seconds to destination';
+	}
+
+	updateSubscribers = {};
+	function subscribe(f) {
+		updateSubscribers[f] = f;
+	}
+
+	function main() {
+		resize();
+		document.body.onresize = resize;
+		setMode('orrery');
+		subscribe(updateClock);
+
+		function statusUpdate(event) {
+			data = JSON.parse(event.data);
+			for (f in updateSubscribers)
+				updateSubscribers[f](data);
+		};
+	    	
+		uri = 'ws://' + window.location.host + '/websocket/status';
+		let sock = new WebSocket(uri)
+		sock.addEventListener('message', statusUpdate)
+    }
+    main();
 </script>
 </body>
+</html>

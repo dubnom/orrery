@@ -116,7 +116,7 @@ def setSettings():
     params = request.json['settings']
     Settings().set(params) 
     orrery.applySettings()
-    networking.networkConfig(params)
+    networking.networkConfig(Settings().settings)
     return json.dumps({})
 
 @app.post('/api/timeNow')
