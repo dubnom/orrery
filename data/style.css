@@ -1,223 +1,179 @@
-	html, body {
-    	height: 100%;
-	}
+html, body {
+	height: 100%;
+}
 
-	html {
-   		display: table;
-    	margin: auto;
-	}
+html {
+	display: table;
+	margin: auto;
+}
 
-	body {
-    	display: table-cell;
-    	vertical-align: middle;
-		color: #FFF;
-		background-color: #111;
-	}
+body {
+	display: table-cell;
+	vertical-align: middle;
+	color: #FFF;
+	background-color: #111;
+}
 
-	#settings {
-  		border: 2px outset yellow;
-    	background-color: #222;
-	  	text-align: center;
-	}
+button {
+	font-family: 'electrolize';
+	font-size: inherit;
+}
 
-	#status {
-  		border: 2px outset lightgreen;
-    	background-color: #181818;
-		display: flex;
-		justify-content: center;
-	}
+#settings {
+	border: 2px outset yellow;
+	background-color: #222;
+  	text-align: center;
+}
 
-	.status_table {
-		font-family: 'electrolize';
-		padding: 10px;
-		align-self: center;
-	}
+#status {
+	border: 2px outset lightgreen;
+	background-color: #181818;
+	display: flex;
+	justify-content: center;
+}
 
-	.status_text {
-		font-size: 125%;
-		white-space: nowrap;
-	}
+.status_table {
+	font-family: 'electrolize';
+	padding: 10px;
+	align-self: center;
+	font-size: inherit;
+}
 
-	.range {
-		font-size: 175%;
-	}
+.status_text {
+	white-space: nowrap;
+}
 
-	#set_table {
-		font-family: 'electrolize';
-	}
+#set_table {
+	font-family: 'electrolize';
+	font-size: inherit;
+	width: 100%;
+}
 
+#expert_controls {
+	font-family: 'electrolize';
+	display: flex;
+	justify-content: center;
+}
 
-	button.large {
-		color: #FFF;
-		background-color: #C55;
-		font-size: 175%;
-	}
+#expert_table {
+	align-self: center;
+	font-size: inherit;
+}
 
-	button.medium {
-		color: #FFF;
-		background-color: #AA0;
-		font-size: 175%;
-	}
+.range {
+	font-size: inherit;
+	font-family: inherit;
+}
 
-	button.small {
-		color: #FFF;
-		background-color: #0A0;
-		font-size: 175%;
-	}
+button.large	{background-color: #C55; color: #FFF;}
+button.medium 	{background-color: #AA0; color: #FFF;}
+button.small 	{background-color: #0A0; color: #FFF;}
 
-	button.halt {
-		color: #FFF;
-		background-color: #800;
-		font-size: 125%;
-	}
+button.halt 		{background-color: #800; color: #FFF;}
+button.deenergize 	{background-color: #F80; color: #000;}
+button.resume 		{background-color: #080; color: #111;}
+button.now			{background-color: #0F0; color: #111;}
+button.resetnow 	{background-color: #F00; color: #FFF;}
+button.reboot 		{background-color: #F00; color: #FF0;}
 
-	button.deenergize {
-		color: #000;
-		background-color: #F80;
-		font-size: 125%;
-	}
+button.apply 	{background-color: yellow; color: black;}
 
-	button.resume {
-		color: #111;
-		background-color: #080;
-		font-size: 125%;
-	}
+#expert_buttons {
+	width: 100%;
+	text-align: center;
+}
 
-	button.now {
-		color: #111;
-		background-color: #0F0;
-		font-size: 125%;
-	}
+#admin_buttons {
+	width: 100%;
+	text-align: center;
+}
 
-	button.resetnow {
-		color: #FFF;
-		background-color: #F00;
-		font-size: 125%;
-	}
+#time_travel {
+	width: 100%;
+	text-align: center;
+	position: relative;
+	z-index: 0;
+	display: none;
+	background-color: #001281;
+	border: 3px outset #314efb;
+	border-radius: 12px;
+}
 
-	button.reboot {
-		color: #FF0;
-		background-color: #F00;
-		font-size: 125%;
-	}
+#date {
+	font-family: electrolize;
+	font-size: 175%;
+}
 
-	#expert_buttons {
-		width: 100%;
-		text-align: center;
-	}
+#travel {
+	background-color: #8c03fc;
+	color: white;
+	font-family: electrolize;
+	font-size: 175%;
+}
 
-	#admin_buttons {
-		width: 100%;
-		text-align: center;
-	}
+#now {
+	background-color: #00ff00;
+	color: black;
+	font-family: electrolize;
+	font-size: 175%;
+}
 
-	#time_travel {
-		width: 100%;
-		text-align: center;
-		position: relative;
-		z-index: 0;
-		display: none;
-	}
+#icon-orrery img {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	width: 64px;
+	height: 64px;
+}
 
-	#date {
-		font-family: electrolize;
-		font-size: 175%;
-	}
+#icon-expert img {
+	position: absolute;
+	top: 72px;
+	right: 8px;
+	width: 64px;
+	height: 64px;
+}
 
-	#travel {
-		background-color: #8c03fc;
-		color: white;
-		font-family: electrolize;
-		font-size: 175%;
-	}
+#icon-admin img {
+	position: absolute;
+	top: 144px;
+	right: 8px;
+	width: 64px;
+	height: 64px;
+}
 
-	#now {
-		background-color: #00ff00;
-		color: black;
-		font-family: electrolize;
-		font-size: 175%;
-	}
+.icon-selected {
+	opacity: .2;
+}
 
-	#icon-orrery img {
-		position: absolute;
-		top: 8px;
-		right: 8px;
-		width: 64px;
-		height: 64px;
-	}
+#speed_title {
+	font-size: 125%;
+	font-family: electrolize;
+	text-align: center;
+}
 
-	#icon-expert img {
-		position: absolute;
-		top: 72px;
-		right: 8px;
-		width: 64px;
-		height: 64px;
-	}
+#speed_slider {
+	text-align: center;
+}
 
-	#icon-admin img {
-		position: absolute;
-		top: 144px;
-		right: 8px;
-		width: 64px;
-		height: 64px;
-	}
+.slider {
+	width: 80%;
+}
 
-	.icon-selected {
-		opacity: .2;
-	}
+#orrery_time {
+	font-size: 300%;
+	font-family: "D14MR";
+	text-align: center;
+}
 
-	#speed_title {
-		font-size: 125%;
-		font-family: electrolize;
-		text-align: center;
-	}
+#time_to_destination {
+	font-size: 100%;
+	font-family: "Electrolize";
+	text-align: center;
+}
 
-	#speed_slider {
-		text-align: center;
-	}
+.image	{font-family: "Electrolize"; text-align: center;}
+.name 	{font-family: "Electrolize"; text-align: left;}
+.angle	{font-family: "Electrolize"; text-align: right;}
+.doy 	{font-family: "Electrolize"; text-align: right;}
 
-	input.apply {
-		background-color: yellow;
-		color: black;
-	}
-
-	input.reboot {
-		background-color: red;
-		color: white;
-	}
-
-	.slider {
-		width: 80%;
-	}
-
-	#orrery_time {
-		font-size: 300%;
-		font-family: "D14MR";
-		text-align: center;
-	}
-
-	#time_to_destination {
-		font-size: 100%;
-		font-family: "Electrolize";
-		text-align: center;
-	}
-
-	.image {
-		font-family: "Electrolize";
-		text-align: center;
-	}
-
-	.name {
-		font-family: "Electrolize";
-		text-align: left;
-	}
-
-	.angle {
-		font-family: "Electrolize";
-		text-align: right;
-	}
-
-	.doy {
-		font-family: "Electrolize";
-		text-align: right;
-	}

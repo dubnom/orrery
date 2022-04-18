@@ -48,14 +48,14 @@
 						<tr><td>Country code</td><td><select id="wifi_country" name="wifi_country"></select></td></tr>
 						<tr><td colspan=2><br></td></tr>
 						<tr><td colspan=2><i><u>Access Point Settings</u></i></td></tr>
-						<tr><td>SSID</td><td><input id="ap_ssid" type="text" size="50"/></td></tr>
-						<tr><td>Password</td><td><input id="ap_pass" type="password" size="50" autocomplete="current-password"/></td></tr>
+						<tr><td>SSID</td><td><input id="ap_ssid" type="text" size="32"/></td></tr>
+						<tr><td>Password</td><td><input id="ap_pass" type="password" size="32" autocomplete="current-password"/></td></tr>
 						<tr><td>Channel</td><td><input id="ap_channel" type="number" min="0" max="12"/></td></tr>
 						<tr><td colspan=2><br></td></tr>
 						<tr><td colspan=2><i><u>Client Settings</u></i></td></tr>
-						<tr><td>SSID</td><td><input id="client_ssid" type="text" size="50"/></td></tr>
-						<tr><td>Password</td><td><input id="client_pass" type="password" size="50" autocomplete="current-password"/></td></tr>
-						<tr><td colspan=2 align='center'><input id="apply_settings" class="apply" type="button" value="Apply Settings" onclick="setSettings()"/></td></tr>
+						<tr><td>SSID</td><td><input id="client_ssid" type="text" size="32"/></td></tr>
+						<tr><td>Password</td><td><input id="client_pass" type="password" size="32" autocomplete="current-password"/></td></tr>
+						<tr><td colspan=2 align='center'><button id="apply_settings" class="apply" onclick="setSettings()">Apply Settings</button></td></tr>
 					</table>
 				</div>
 			</div>
@@ -118,11 +118,12 @@
 	}
 
 	function resetNow() {
-		postData('/api/resetnow');
+		if (confirm("\nRESET NOW!\n\nThis may make it so the positions of the planets\nno longer match the time.\n\nAre you sure?"))r
+			postData('/api/resetnow');
 	}
 
 	function reboot() {
-		if (confirm("Are you sure you want to reboot?"))
+		if (confirm("\nREBOOT!\n\nAre you sure you want to reboot?"))
 			postData('/api/reboot');
 	}
 </script>
@@ -280,8 +281,7 @@
 
 	function makeExpertControls() {
 		t = document.createElement('table');
-		t.style.fontFamily = 'Electrolize';
-		t.align = 'center';
+		t.id = 'expert_table';
 		for (name of moveTable) {
 			tr = t.insertRow();
 			for ([amt, className] of amounts) { 
@@ -293,7 +293,6 @@
 				}
 				else {
 					butt = document.createElement('button');
-					//butt.value = amt;
 					butt.className = className;
 					butt.innerHTML = amt;
 					butt.onclick = new Function( "move("+amt+",'"+name+"')");
@@ -385,6 +384,59 @@
 		}
 		document.getElementById('status').replaceChildren(t);
 	}
+
+	function getSettings() {
+		postData('/api/getsettings').then(settings => {
+				document.getElementById('max_speed').value = Math.round(88 * ((settings['maxSpeed'] / 10000) / 3200));
+				document.getElementById('current').value = settings['current'];
+				radioSetValue('wifi_mode', settings['wifi_mode']);
+				document.getElementById('wifi_country').value = settings['wifi_country'];
+				document.getElementById('timezone').value = settings['timezone'];
+				document.getElementById('ap_ssid').value = settings['ap_ssid'];
+				document.getElementById('ap_pass').value = settings['ap_pass'];
+				document.getElementById('ap_channel').value = settings['ap_channel'];
+				document.getElementById('client_ssid').value = settings['client_ssid'];
+				document.getElementById('client_pass').value = settings['client_pass'];
+		});
+	}
+
+	function setSettings() {
+		if (confirm("\nApply Settings\n\nThis will change networking, system, and orrery settings.\nPlease confirm that you wish to continue."))
+			postData('/api/setsettings', {"settings": {
+					"maxSpeed": Math.floor((parseFloat(document.getElementById('max_speed').value)/88)*3200*10000),
+					"current": parseFloat(document.getElementById('current').value),
+					"timezone": document.getElementById('timezone').value,
+					"wifi_mode": radioGetValue('wifi_mode'),
+					"wifi_country": document.getElementById('wifi_country').value,
+					"ap_ssid": document.getElementById('ap_ssid').value,
+					"ap_pass": document.getElementById('ap_pass').value,
+					"ap_channel": document.getElementById('ap_channel').value,
+					"client_ssid": document.getElementById('client_ssid').value,
+					"client_pass": document.getElementById('client_pass').value
+			}});
+	}
+
+	function getCountries() {
+		postData('/countries').then(countries => {
+				var select = document.getElementById("wifi_country");
+				for (let country of countries) {
+					var option = document.createElement('option');
+					option.value = country[0];
+					option.text  = country[1] + ' (' + country[0] + ')';
+					select.appendChild(option);}
+		})
+	}
+
+	function getTimeZones() {
+		postData('/timezones').then(timezones => {
+				var select = document.getElementById("timezone");
+				for (let timezone of timezones) {
+					var option = document.createElement('option');
+					option.value = timezone;
+					option.text = timezone;
+					select.appendChild(option); }
+		})
+	}
 </script>
 <script>
 	modes = [
@@ -434,14 +486,14 @@
 		setSize("locations", fw, controls_height - fw);
 
 		// Expert mode layout
-		setSize("expert_controls", fw, controls_height * 10 / 12);
-		setSize("speed_slider", fw, controls_height / 12);
-		setSize("expert_buttons", fw, controls_height / 12);
+		setSize("expert_controls", fw, controls_height * 10 / 18, controls_height * .5 / 15);
+		setSize("speed_slider", fw, controls_height / 18);
+		setSize("expert_buttons", fw, controls_height / 18, controls_height * .5 / 22);
 
 		// Admin mode layout
-		setSize("admin_buttons", fw, controls_height / 26, controls_height * 1 / 26 * .5);
-		setSize("status", fw, controls_height * 7 / 26, controls_height * 7 / 26 * .75);
-		setSize("settings", fw, controls_height * 17 / 26, controls_height * 17 / 26 * .5);
+		setSize("admin_buttons", fw, controls_height / 26, controls_height * .5 / 22);
+		setSize("status", fw, controls_height * 7 / 26, controls_height * 1 / 26 * .5);
+		setSize("settings", fw, controls_height * 17 / 26, controls_height * 1 / 26 * .5);
 	}
 
 	function updateClock(data) {
@@ -482,7 +534,7 @@
 		document.getElementById('time_travel').style.display = 'none';
 	}
 
-	// Reset the dialog to today's date
+	// Reset the time travel dialog to today's date
 	// at the first minute of each day
 	function resetDefaultDates() {
 		function dateToStr(d) {return (d.getFullYear() + '-' +( '0'+(1+d.getMonth())).slice(-2) + '-' + ('0'+d.getDate()).slice(-2))};
@@ -505,14 +557,14 @@
 	}
 
 	function main() {
-		resize();
-		document.body.onresize = resize;
-					
 		makeExpertControls();
 		resetDefaultDates();
 		makeButtons("expert_buttons", 1);
 		makeButtons("admin_buttons",  2);
-		setMode('orrery');
+
+		getTimeZones();
+		getCountries();
+		getSettings();
 
 		subscribe(updateClock);
 		subscribe(updatePlanetarium);
@@ -520,6 +572,10 @@
 		subscribe(updateStatus);
 		subscribe(updateSlider);
 
+		resize();
+		document.body.onresize = resize;
+		setMode('orrery');
+					
 		function statusUpdate(event) {
 			data = JSON.parse(event.data);
 			for (f in updateSubscribers)

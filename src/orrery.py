@@ -151,7 +151,6 @@ class Orrery():
         if int(self._targetPos) != int(newPos):
             self._targetPos = newPos
             self.resume()
-            self._tic.setTargetPosition(int(self._targetPos))
 
     def _updateNow(self, nowT: datetime):
         self._nowT = nowT
@@ -203,6 +202,7 @@ class Orrery():
         self._tic.clearDriverError()
         self._tic.exitSafeStart()
         self._tic.energize()
+        self._tic.setTargetPosition(int(self._targetPos))
 
     def resetNow(self):
         position = self._timeToPosition(self._nowT)
