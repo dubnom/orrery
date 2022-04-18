@@ -21,14 +21,6 @@ app = Bottle()
 def redirection():
     return redirect('/orrery.html')
 
-@app.route('/admin')
-def redirection():
-    return redirect('/admin.html')
-
-@app.route('/expert')
-def redirection():
-    return redirect('/expert.html')
-
 @app.route('/favicon.ico')
 def favicon():
     return static_file('favicon.ico', root='data')
