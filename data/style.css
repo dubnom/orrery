@@ -14,15 +14,28 @@
 		background-color: #111;
 	}
 
-	.divs {
+	#settings {
   		border: 2px outset yellow;
     	background-color: #222;
 	  	text-align: center;
 	}
 
-	.status {
+	#status {
   		border: 2px outset lightgreen;
     	background-color: #181818;
+		display: flex;
+		justify-content: center;
+	}
+
+	.status_table {
+		font-family: 'electrolize';
+		padding: 10px;
+		align-self: center;
+	}
+
+	.status_text {
+		font-size: 125%;
+		white-space: nowrap;
 	}
 
 	.range {
@@ -45,6 +58,46 @@
 		color: #FFF;
 		background-color: #0A0;
 		font-size: 175%;
+	}
+
+	button.halt {
+		color: #FFF;
+		background-color: #800;
+		font-size: 125%;
+	}
+
+	button.deenergize {
+		color: #000;
+		background-color: #F80;
+		font-size: 125%;
+	}
+
+	button.resume {
+		color: #111;
+		background-color: #080;
+		font-size: 125%;
+	}
+
+	button.now {
+		color: #111;
+		background-color: #0F0;
+		font-size: 125%;
+	}
+
+	button.resetnow {
+		color: #FFF;
+		background-color: #F00;
+		font-size: 125%;
+	}
+
+	#expert_buttons {
+		width: 100%;
+		text-align: center;
+	}
+
+	#admin_buttons {
+		width: 100%;
+		text-align: center;
 	}
 
 	#time_travel {
@@ -100,7 +153,16 @@
 
 	.icon-selected {
 		opacity: .2;
-		//filter: blur(2px);
+	}
+
+	#speed_title {
+		font-size: 125%;
+		font-family: electrolize;
+		text-align: center;
+	}
+
+	#speed_slider {
+		text-align: center;
 	}
 
 	input.apply {

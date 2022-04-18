@@ -22,11 +22,14 @@
 			</div>
 			<div id="mode_expert">
 				<div id="expert_controls"></div>
-				<div id="speed_slider"></div>
+				<div id="speed_slider">
+					<div id="speed_title"></div>
+					<input type="range" min="1" max="180" class="slider" id="speed" oninput="sliderChange()">
+				</div>
 				<div id="expert_buttons"></div>
 			</div>
 			<div id="mode_admin">
-				<div id="admin_controls"></div>
+				<div id="admin_buttons"></div>
 				<div id="status"></div>
 				<div id="settings"></div>
 			</div>
@@ -77,6 +80,15 @@
 
 	function now() {
 		postData('/api/timeNow');
+	}
+
+	function move(amt, typ) {
+		postData('/api/move', {'amt': amt, 'typ': typ});
+	}
+
+	function setSpeed(days_per_second) {
+		var stepsPerSecond = Math.round(days_per_second * 3200 * 10000 / 88);
+		postData('/api/setsettings', {"settings": {"maxSpeed": stepsPerSecond}});
 	}
 
 	function resetnow() {
@@ -265,6 +277,45 @@
 		}
 		document.getElementById('expert_controls').replaceChildren(t);
 	}
+
+	function sliderChange() {
+		var c = document.getElementById("speed");
+		var t = document.getElementById("speed_title");
+		var daysPerSecond = parseInt(c.value);
+		t.innerHTML = 'Speed ' + daysPerSecond + ' (days per second)';
+		setSpeed(daysPerSecond);
+	}
+
+	function updateSlider(data) {
+		stepsPerSecond = data.status.max_speed[0];
+		var c = document.getElementById("speed");
+		var t = document.getElementById("speed_title");
+		daysPerSecond = Math.round(88 * (stepsPerSecond / 3200));
+		c.value = daysPerSecond;
+		t.innerHTML = 'Speed ' + daysPerSecond + ' (days per second)';
+	}
+
+	// Create live control buttons
+	function makeButtons(parent, lvl) {
+		const buttons = [
+				[ "HALT!", 			"halt()",		"halt",			1 ],
+				[ "De-energize", 	"deenergize()",	"deenergize",	1 ],
+				[ "Resume",			"resume()",		"resume",		1 ],
+				[ "Now",			"now()",		"now",			1 ],
+				[ "Reset Now",		"resetnow()",	"resetnow",		2 ]
+		];
+
+		el = document.getElementById(parent);
+		for (button of buttons) {
+			if (button[3] <= lvl) {
+				butt = document.createElement('button');
+				butt.innerHTML = button[0];
+				butt.onclick = new Function(button[1]);
+				butt.className = button[2];
+				el.appendChild(butt);
+			}
+		}
+	}
 </script>
 <script>
 	// Admin status display
@@ -283,24 +334,27 @@
         fontSize = c.style.fontSize;
 
 		t = document.createElement('table');
-		t.style.fontFamily = 'Electrolize';
-		t.style.width = '70%';
-		t.margin = 10;
-		t.align = 'center';
+		t.className = "status_table";
 		for ([name, key] of fields) {
 			tr = t.insertRow();
 			tc = tr.insertCell();
 			tc.textContent = name;
+			tc.className = "status_text";
+
 			tc = tr.insertCell();
 			value = data.status[key][0];
 			units = data.status[key][1];
 			if (value >= 1000)
 				value = value.toLocaleString();
 			tc.textContent = value;
+			tc.className = "status_text";
+
 			tc.style.textAlign = 'right';
 			tc = tr.insertCell();
-			if (units.length)
+			if (units.length) {
 				tc.textContent = '(' + units + ')';
+				tc.className = "status_text";
+			}
 		}
 		document.getElementById('status').replaceChildren(t);
 	}
@@ -358,9 +412,9 @@
 		setSize("expert_buttons", fw, controls_height / 12);
 
 		// Admin mode layout
-		setSize("admin_controls", fw, controls_height / 26);
-		setSize("status", fw, controls_height * 7 / 26);
-		setSize("settings", fw, controls_height * 18 / 26);
+		setSize("admin_buttons", fw, controls_height / 26, controls_height * 1 / 26 * .5);
+		setSize("status", fw, controls_height * 7 / 26, controls_height * 7 / 26 * .75);
+		setSize("settings", fw, controls_height * 17 / 26, controls_height * 17 / 26 * .5);
 	}
 
 	function updateClock(data) {
@@ -429,12 +483,15 @@
 					
 		makeExpertControls();
 		resetDefaultDates();
+		makeButtons("expert_buttons", 1);
+		makeButtons("admin_buttons",  2);
 		setMode('orrery');
 
 		subscribe(updateClock);
 		subscribe(updatePlanetarium);
 		subscribe(updateLocations);
 		subscribe(updateStatus);
+		subscribe(updateSlider);
 
 		function statusUpdate(event) {
 			data = JSON.parse(event.data);
