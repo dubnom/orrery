@@ -31,7 +31,33 @@
 			<div id="mode_admin">
 				<div id="admin_buttons"></div>
 				<div id="status"></div>
-				<div id="settings"></div>
+				<div id="settings">
+					<table id="set_table">
+						<tr><th colspan=2>Orrery Settings</th></tr>
+						<tr><td>Speed</td><td><input id="max_speed" type="text"/> (days per second)</td></tr>
+						<tr><td>Current</td><td><input id="current" type="text"/> (amps)</td></tr>
+						<tr><td>Time zone</td><td><select id="timezone" name="timezone"></select></td></tr>
+
+						<tr><th colspan=2><hr><br>WiFi Settings</th></tr>
+						<tr><td>Startup Mode</td>
+							<td>
+								<input id="wifi_server" type="radio" name="wifi_mode" value="server"><label for="wifi_server">Access Point</label>
+								<input id="wifi_client" type="radio" name="wifi_mode" value="client" checked><label for="wifi_client">Client</label>
+							</td>
+						</tr>
+						<tr><td>Country code</td><td><select id="wifi_country" name="wifi_country"></select></td></tr>
+						<tr><td colspan=2><br></td></tr>
+						<tr><td colspan=2><i><u>Access Point Settings</u></i></td></tr>
+						<tr><td>SSID</td><td><input id="ap_ssid" type="text" size="50"/></td></tr>
+						<tr><td>Password</td><td><input id="ap_pass" type="password" size="50" autocomplete="current-password"/></td></tr>
+						<tr><td>Channel</td><td><input id="ap_channel" type="number" min="0" max="12"/></td></tr>
+						<tr><td colspan=2><br></td></tr>
+						<tr><td colspan=2><i><u>Client Settings</u></i></td></tr>
+						<tr><td>SSID</td><td><input id="client_ssid" type="text" size="50"/></td></tr>
+						<tr><td>Password</td><td><input id="client_pass" type="password" size="50" autocomplete="current-password"/></td></tr>
+						<tr><td colspan=2 align='center'><input id="apply_settings" class="apply" type="button" value="Apply Settings" onclick="setSettings()"/></td></tr>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -78,7 +104,7 @@
 		postData('/api/resume');
 	}
 
-	function now() {
+	function goNow() {
 		postData('/api/timeNow');
 	}
 
@@ -91,7 +117,7 @@
 		postData('/api/setsettings', {"settings": {"maxSpeed": stepsPerSecond}});
 	}
 
-	function resetnow() {
+	function resetNow() {
 		postData('/api/resetnow');
 	}
 
@@ -301,8 +327,9 @@
 				[ "HALT!", 			"halt()",		"halt",			1 ],
 				[ "De-energize", 	"deenergize()",	"deenergize",	1 ],
 				[ "Resume",			"resume()",		"resume",		1 ],
-				[ "Now",			"now()",		"now",			1 ],
-				[ "Reset Now",		"resetnow()",	"resetnow",		2 ]
+				[ "Now",			"goNow()",		"now",			1 ],
+				[ "Reset Now",		"resetNow()",	"resetnow",		2 ],
+				[ "Reboot",			"reboot()",		"reboot",		2 ]
 		];
 
 		el = document.getElementById(parent);
@@ -310,7 +337,7 @@
 			if (button[3] <= lvl) {
 				butt = document.createElement('button');
 				butt.innerHTML = button[0];
-				butt.onclick = new Function(button[1]);
+				butt.onclick = new Function( button[1] );
 				butt.className = button[2];
 				el.appendChild(butt);
 			}
@@ -451,7 +478,7 @@
     }
 
 	function timeNow() {
-		postData('/api/timeNow').then(data => {});
+		goNow();
 		document.getElementById('time_travel').style.display = 'none';
 	}
 

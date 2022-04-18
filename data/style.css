@@ -42,6 +42,11 @@
 		font-size: 175%;
 	}
 
+	#set_table {
+		font-family: 'electrolize';
+	}
+
+
 	button.large {
 		color: #FFF;
 		background-color: #C55;
@@ -86,6 +91,12 @@
 
 	button.resetnow {
 		color: #FFF;
+		background-color: #F00;
+		font-size: 125%;
+	}
+
+	button.reboot {
+		color: #FF0;
 		background-color: #F00;
 		font-size: 125%;
 	}
