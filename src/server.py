@@ -109,6 +109,9 @@ def setSettings():
     Settings().set(params) 
     orrery.applySettings()
     networking.networkConfig(Settings().settings)
+    #timezone = Settings().settings[timezone]
+    #if timezone in all_timezones:
+    #    os.system(f'timedatectl set-timezone {timezone}');
     return json.dumps({})
 
 @app.post('/api/timeNow')
