@@ -5,6 +5,7 @@ import os
 import json
 from json.decoder import JSONDecodeError
 from threading import Thread, Event
+from random import randint, random
 from tic import TicController, T500_CURRENTS, t500_lookupCurrent, TicList
 from settings import *
 
@@ -91,6 +92,7 @@ class Orrery():
     _tic = None
     _targetPos = 0
     _targetT = _nowT = datetime.now()
+    _demoDir = True
 
     def __init__(self, ticID=None):
         # Discover the ticID if nothing is specified
@@ -156,6 +158,20 @@ class Orrery():
         self._nowT = nowT
         if self._state.state['mode'] == 'now':
             self._setTime(nowT)
+        elif self._state.state['mode'] == 'demo':
+            # Demo mode:
+            #   randomly move forward or backward 1 planet year, and then
+            #   return to the current time.  Continue until 'now'
+            #   or time travel is requested.
+            if self._state.state['state'] == 'stopped':
+                if self._demoDir:
+                    randomPlanet = planets[randint(0, len(planets)-1)]
+                    direction = -1 if random() < .5 else 1
+                    self.moveRelative(direction, randomPlanet)
+                    self._state.state['mode'] = 'demo'
+                else:
+                    self._setTime(self._nowT)
+                self._demoDir = not self._demoDir 
 
     def timeNow(self):
         self._state.set(mode='now')
@@ -164,6 +180,9 @@ class Orrery():
     def timeTravel(self, targetT: datetime):
         self._state.set(mode='travel')
         self._setTime(targetT)
+
+    def demoMode(self):
+        self._state.set(mode='demo')
 
     def planetPositions(self):
         if self._state.state['state'] == 'moving':

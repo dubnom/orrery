@@ -112,6 +112,10 @@
 		postData('/api/move', {'amt': amt, 'typ': typ});
 	}
 
+	function demo() {
+		postData('/api/demo');
+	}
+
 	function setSpeed(days_per_second) {
 		var stepsPerSecond = Math.round(days_per_second * 3200 * 10000 / 88);
 		postData('/api/setsettings', {"settings": {"maxSpeed": stepsPerSecond}});
@@ -327,6 +331,7 @@
 				[ "De-energize", 	"deenergize()",	"deenergize",	1 ],
 				[ "Resume",			"resume()",		"resume",		1 ],
 				[ "Now",			"goNow()",		"now",			1 ],
+				[ "Demo",			"demo()",		"demo",			1 ],
 				[ "Reset Now",		"resetNow()",	"resetnow",		2 ],
 				[ "Reboot",			"reboot()",		"reboot",		2 ]
 		];
@@ -501,6 +506,7 @@
 		if (data.state.state == 'moving')		el.style.color = "#FFFF00";
 		else if (data.state.mode == 'now')		el.style.color = "#00FF00";
 		else if (data.state.mode == 'travel')	el.style.color = "#AF00FF";
+		else if (data.state.mode == 'demo')		el.style.color = "#039DFC"; 
 		else									el.style.color = "#FF0000";
         el.textContent = data.time;
 

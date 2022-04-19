@@ -68,6 +68,12 @@ def move():
     orrery.moveRelative(amt, typ)
     return json.dumps({})
 
+@app.get('/api/demo')
+@app.post('/api/demo')
+def demo():
+    orrery.demoMode()
+    return json.dumps({})
+
 @app.get('/api/halt')
 @app.post('/api/halt')
 def halt():

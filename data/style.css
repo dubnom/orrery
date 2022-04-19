@@ -72,6 +72,7 @@ button.small 	{background-color: #0A0; color: #FFF;}
 button.halt 		{background-color: #800; color: #FFF;}
 button.deenergize 	{background-color: #F80; color: #000;}
 button.resume 		{background-color: #080; color: #111;}
+button.demo 		{background-color: #08A; color: #FFF;}
 button.now			{background-color: #0F0; color: #111;}
 button.resetnow 	{background-color: #F00; color: #FFF;}
 button.reboot 		{background-color: #F00; color: #FF0;}
