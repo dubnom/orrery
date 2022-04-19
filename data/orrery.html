@@ -451,6 +451,7 @@
 	];
 
 	function setMode(mode) {
+		getSettings();
 		for (m of modes) {
 			el = document.getElementById(m['id']);
 			icon = document.getElementById(m['icon']);
