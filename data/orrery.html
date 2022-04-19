@@ -583,9 +583,38 @@
 			for (f in updateSubscribers)
 				updateSubscribers[f](data);
 		};
-	    	
-		let sock = new WebSocket(sockURI)
-		sock.addEventListener('message', statusUpdate)
+
+		function wsGood(event) {
+			document.getElementById('clock_frame').style.backgroundColor = '#111';
+		}
+
+		function wsBad(event) {
+			document.getElementById('clock_frame').style.backgroundColor = '#A00';
+			reconnectMaybe();
+		}
+
+		sock = null;
+		function reconnectMaybe(looping=false) {
+			visible = !document['hidden'];
+			ready = (sock && sock.readyState != sock.CLOSED);
+			if (!ready && visible) {
+				sock = new WebSocket(sockURI);
+				sock.addEventListener('message', statusUpdate);
+				sock.addEventListener('open', wsGood);
+				sock.addEventListener('error', wsBad);
+				sock.addEventListener('close', wsBad);
+			}
+			if (looping)
+				setTimeout(reconnectMaybe, 5000, true);
+		}
+
+		function handleVisChange() {
+			if (!document['hidden'])
+				reconnectMaybe();
+		}
+		
+		reconnectMaybe(true);
+		document.addEventListener("visibilitychange", handleVisChange, false);
     }
     main();
 </script>
