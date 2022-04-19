@@ -112,9 +112,10 @@ class Orrery():
         position = self._timeToPosition(datetime.utcnow())
         self._state = PersistentState(STATE_FILENAME, position)
 
+        # FIX: SET THE POSITION NO MATTER WHAT.
         # Power-up the tic, reset position if the state couldn't be trusted
-        if not self._state.trust:
-            self._tic.haltAndSetPosition(int(position))
+        # if not self._state.trust:
+        self._tic.haltAndSetPosition(int(position))
         self._ticThread = TicThread(self._tic, .1, self._updateOrreryPos)
         self._ticThread.start()
         self._tic.exitSafeStart()
