@@ -21,5 +21,5 @@ def networkConfig(params):
     # Hostname is updated using the command line
     # and made safe through the regular expression
     names = SAFE_HOSTNAME.match(params["hostname"])
-    if len(names) == 1 and not names[0].startswith('-'):
+    if names and len(names) == 1 and not names[0].startswith('-'):
         os.system('hostname %s' % names[0])
