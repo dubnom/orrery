@@ -220,6 +220,9 @@
 		}
 		ctx.stroke();
 
+		let sunSize = size / 25;
+		ctx.drawImage("/data/sun.png", size-sunSize, size-sunSize, sunSize, sunSize);
+		
 		positions = data.positions;
     	ctx.setLineDash([2,4]);
         for (let [name, values] of pInfo.entries()) {
