@@ -56,6 +56,9 @@
 						<tr><td>SSID</td><td><input id="client_ssid" type="text" size="32"/></td></tr>
 						<tr><td>Password</td><td><input id="client_pass" type="password" size="32" autocomplete="current-password"/></td></tr>
 						<tr><td colspan=2 align='center'><button id="apply_settings" class="apply" onclick="setSettings()">Apply Settings</button></td></tr>
+
+						<tr><th colspan=2><hr><br>Host Settings</th><</tr>
+						<tr><td>Host Name</td><td><input id="host_name" type="text" size=48/></td></tr>
 					</table>
 				</div>
 			</div>
@@ -129,6 +132,11 @@
 	function reboot() {
 		if (confirm("\nREBOOT!\n\nAre you sure you want to reboot?"))
 			postData('/api/reboot');
+	}
+
+	function swupdate() {
+		if (confirm("\nUPDATE SOFTWARE\n\nThe orrery needs to be connected to the internet\nand should be rebooted once finished.\n\nAre you sure?"))
+			postData('/api/swupdate')
 	}
 </script>
 <script>
@@ -333,7 +341,8 @@
 				[ "Now",			"goNow()",		"now",			1 ],
 				[ "Demo",			"demo()",		"demo",			1 ],
 				[ "Reset Now",		"resetNow()",	"resetnow",		2 ],
-				[ "Reboot",			"reboot()",		"reboot",		2 ]
+				[ "Reboot",			"reboot()",		"reboot",		2 ],
+				[ "SW Update",		"swupdate()",	"swupdate",		2 ]
 		];
 
 		el = document.getElementById(parent);
@@ -402,6 +411,7 @@
 				document.getElementById('ap_channel').value = settings['ap_channel'];
 				document.getElementById('client_ssid').value = settings['client_ssid'];
 				document.getElementById('client_pass').value = settings['client_pass'];
+				document.getElementById('hostname').value = settings['hostname'];
 		});
 	}
 
@@ -417,7 +427,8 @@
 					"ap_pass": document.getElementById('ap_pass').value,
 					"ap_channel": document.getElementById('ap_channel').value,
 					"client_ssid": document.getElementById('client_ssid').value,
-					"client_pass": document.getElementById('client_pass').value
+					"client_pass": document.getElementById('client_pass').value,
+					"hostname": document.getElementById('hostname').value
 			}});
 	}
 

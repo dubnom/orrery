@@ -21,6 +21,7 @@ defaults = {
     'ap_channel': 10,
     'client_ssid': '',
     'client_pass': '',
+    'hostname': 'orrery',
 }
 
 class Settings():
