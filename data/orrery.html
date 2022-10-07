@@ -224,8 +224,8 @@
 		}
 		ctx.stroke();
 
-		let sunSize = size / 25;
-		ctx.drawImage(sunImage, size-sunSize, size-sunSize, sunSize, sunSize);
+		let sunSize = radius * .9;
+		ctx.drawImage(sunImage, size-sunSize, size-sunSize, sunSize*2, sunSize*2);
 		
 		positions = data.positions;
     	ctx.setLineDash([2,4]);
