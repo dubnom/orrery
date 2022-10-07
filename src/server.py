@@ -108,8 +108,8 @@ def reboot():
 @app.post('/api/swupdate')
 def swupdate():
     os.system("git pull")
-    exit(1)
-    #return json.dumps({})
+    os.system('reboot')
+    return json.dumps({})
 
 @app.get('/api/getsettings')
 @app.post('/api/getsettings')
