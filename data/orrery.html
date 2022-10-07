@@ -159,6 +159,10 @@
 		images[name] = img;
 	}
 
+	// And the sun
+	let sunImage = new Image();
+	sunImage.src = '/data/sun.png';
+
 	// Table of month lengths for angle to date conversion
 	let months = [
 		['Jan', 31], ['Feb', 28], ['Mar', 31], ['Apr', 30], ['May', 31], ['Jun', 30],
@@ -221,7 +225,7 @@
 		ctx.stroke();
 
 		let sunSize = size / 25;
-		ctx.drawImage("/data/sun.png", size-sunSize, size-sunSize, sunSize, sunSize);
+		ctx.drawImage(sunImage, size-sunSize, size-sunSize, sunSize, sunSize);
 		
 		positions = data.positions;
     	ctx.setLineDash([2,4]);
