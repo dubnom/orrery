@@ -1,4 +1,4 @@
-function getCircularText(text, diameter, startAngle, align, textInside, inwardFacing, fName, fSize, kerning) {
+function getCircularText(text, diameter, startAngle, align, textInside, inwardFacing, fName, fSize, kerning, color) {
 	// text:         The text to be displayed in circular fashion
 	// diameter:     The diameter of the circle around which the text will
 	//               be displayed (inside or outside)
@@ -64,7 +64,7 @@ function getCircularText(text, diameter, startAngle, align, textInside, inwardFa
 	// Phew... now rotate into final start position
 	ctxRef.rotate(startAngle);
 	// FIX: I added this one
-	ctxRef.fillStyle = '#FFF';
+	ctxRef.fillStyle = color;
 
 	// Now for the fun bit: draw, rotate, and repeat
 	for (var j = 0; j < text.length; j++) {
