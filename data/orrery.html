@@ -182,7 +182,7 @@
 
 	zodiacStarts = "March 21" 
 	
-	
+
 	function radians(a) {return a * Math.PI / 180;}
 
     function updatePlanetarium(data) {
@@ -228,6 +228,31 @@
 
 			a = offset + (day + days / 2) * (360 / 365);
 			txt = getCircularText(name, dist*10*2, -a, 'center', true, true, ctx.font, size/15, 0 );
+			ctx.drawImage(txt, (width-txt.width)/2, (height-txt.height)/2);
+			day += days;
+		}
+		ctx.stroke();
+
+		// Draw the Zodiac names and separators
+		ctx.font = '' + (size / 18) + 'px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+		ctx.setLineDash([]);
+		ctx.strokeStyle = '#444';
+		let day = 80;
+		let offset = 100.231 - 90;
+		days = 365.25 / 12.
+		for (let name of zodiac) {
+			let a = radians(offset + day * 360 / 365);
+			let x = Math.cos(a) * dist * 9;
+            let y = Math.sin(a) * dist * 9;
+			ctx.beginPath();
+            ctx.moveTo(size, size);
+            ctx.lineTo(size + x, size - y);
+            ctx.stroke();
+
+			a = offset + (day + days / 2) * (360 / 365);
+			txt = getCircularText(name, dist*9*2, -a, 'center', true, true, ctx.font, size/18, 0 );
 			ctx.drawImage(txt, (width-txt.width)/2, (height-txt.height)/2);
 			day += days;
 		}
