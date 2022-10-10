@@ -205,7 +205,7 @@
         ctx.textBaseline = 'middle';
 		ctx.setLineDash([]);
 		ctx.strokeStyle = '#777';
-		let day = 0;
+		day = 0;
 		let offset = 100.231 - 90;
 		for (let [name, days] of months) {
 			let a = radians(offset + day * 360 / 365);
@@ -239,8 +239,7 @@
         ctx.textBaseline = 'middle';
 		ctx.setLineDash([]);
 		ctx.strokeStyle = '#444';
-		let day = 80;
-		let offset = 100.231 - 90;
+		day = 80;
 		days = 365.25 / 12.
 		for (let name of zodiac) {
 			let a = radians(offset + day * 360 / 365);
