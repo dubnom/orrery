@@ -8,6 +8,7 @@ import logging
 import csv
 from sys import argv
 from random import randint
+from orreryapi import *
 
 
 # Constants
@@ -74,37 +75,6 @@ class Tach(Thread):
 
     def run(self):
         pause()
-
-
-class OrreryClient:
-    """Local client to send requests to the orrery server."""
-
-    def __init__(self, url='http://work2.dubno.com:8080/orrery/api'):
-        self._url = url
-
-    def status(self):
-        r = requests.get(f"{self._url}/status")
-        return r.json()
-
-    def move(self, amt, typ):
-        params = {'amt': amt, 'typ': typ}
-        r = requests.post(f"{self._url}/move", json=params)
-
-    def halt(self):
-        r = requests.post(f"{self._url}/halt")
-
-    def deenergize(self):
-        r = requests.post(f"{self._url}/deenergize")
-
-    def resetNow(self):
-        r = requests.post(f"{self._url}/resetnow")
-
-    def timeNow(self):
-        r = requests.post(f"{self._url}/timeNow")
-
-    def timeTravel(self, timeString):
-        params = {"time_string": timeString}
-        r = requests.post(f"{self._url}/timeTravel", json=params)
 
 
 def main(amt, typ, note):

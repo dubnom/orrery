@@ -1,3 +1,4 @@
 cd /home/orrery/orrery
 ./config/runloop.sh src/server.py &
+./config/runloop.sh src/demodaemon.py &
 ./src/boot.py || config/accesspoint &
