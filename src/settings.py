@@ -12,6 +12,7 @@ hx = ''.join(MAC.split(':'))
 ap_ssid = f'orrery{hx[8:]}' 
 
 defaults = { 
+    'demo_time': 5,
     'maxSpeed': 32000000,
     'current': .495,
     'wifi_mode': 'server',

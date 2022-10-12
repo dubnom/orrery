@@ -15,8 +15,6 @@ STEPS_PER_ROTATION = 400 * 8
 DAYS_IN_MERCURY_YEAR = 88
 STEPS_PER_DAY = STEPS_PER_ROTATION / DAYS_IN_MERCURY_YEAR
 
-DEMO_TIME = timedelta(minutes=5)
-
 planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
 
 planetInfo = {
@@ -169,7 +167,7 @@ class Orrery():
             if self._state.state['state'] == 'stopped':
                 if self._nowT > self._demoEndT:
                     self._state.state['mode'] = 'now'
-                else
+                else:
                     if self._demoDir:
                         randomPlanet = planets[randint(0, len(planets)-1)]
                         direction = -1 if random() < .5 else 1
@@ -188,7 +186,7 @@ class Orrery():
         self._setTime(targetT)
 
     def demoMode(self):
-        self._demoEndT = self._nowT + DEMO_TIME
+        self._demoEndT = self._nowT + timedelta(minutes=self._settings.settings['demo_time'])
         self._state.set(mode='demo')
 
     def planetPositions(self):

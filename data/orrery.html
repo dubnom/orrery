@@ -37,6 +37,7 @@
 						<tr><td>Speed</td><td><input id="max_speed" type="text"/> (days per second)</td></tr>
 						<tr><td>Current</td><td><input id="current" type="text"/> (amps)</td></tr>
 						<tr><td>Time zone</td><td><select id="timezone" name="timezone" disabled></select></td></tr>
+                        <tr><td>Demo time</td><td><input id="demo_time" type="text"> (minutes)</td></tr>
 
 						<tr><th colspan=2><hr><br>Network Settings</th></tr>
 						<tr><td>Startup Mode</td>
@@ -458,6 +459,7 @@
 				document.getElementById('client_ssid').value = settings['client_ssid'];
 				document.getElementById('client_pass').value = settings['client_pass'];
 				document.getElementById('hostname').value = settings['hostname'];
+                document.getElementById('demo_time').value = settings['demo_time'];
 		});
 	}
 
@@ -474,7 +476,8 @@
 					"ap_channel": document.getElementById('ap_channel').value,
 					"client_ssid": document.getElementById('client_ssid').value,
 					"client_pass": document.getElementById('client_pass').value,
-					"hostname": document.getElementById('hostname').value
+					"hostname": document.getElementById('hostname').value,
+                    "demo_time": parseFloat(document.getElementById('demo_time').value)
 			}});
 	}
 
