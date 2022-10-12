@@ -15,6 +15,8 @@ STEPS_PER_ROTATION = 400 * 8
 DAYS_IN_MERCURY_YEAR = 88
 STEPS_PER_DAY = STEPS_PER_ROTATION / DAYS_IN_MERCURY_YEAR
 
+DEMO_TIME = timedelta(minutes=5)
+
 planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
 
 planetInfo = {
@@ -91,7 +93,7 @@ class Orrery():
 
     _tic = None
     _targetPos = 0
-    _targetT = _nowT = datetime.now()
+    _targetT = _nowT = _demoEndT = datetime.now()
     _demoDir = True
 
     def __init__(self, ticID=None):
@@ -165,14 +167,17 @@ class Orrery():
             #   return to the current time.  Continue until 'now'
             #   or time travel is requested.
             if self._state.state['state'] == 'stopped':
-                if self._demoDir:
-                    randomPlanet = planets[randint(0, len(planets)-1)]
-                    direction = -1 if random() < .5 else 1
-                    self.moveRelative(direction, randomPlanet)
-                    self._state.state['mode'] = 'demo'
-                else:
-                    self._setTime(self._nowT)
-                self._demoDir = not self._demoDir 
+                if self._nowT > self._demoEndT:
+                    self._state.state['mode'] = 'now'
+                else
+                    if self._demoDir:
+                        randomPlanet = planets[randint(0, len(planets)-1)]
+                        direction = -1 if random() < .5 else 1
+                        self.moveRelative(direction, randomPlanet)
+                        self._state.state['mode'] = 'demo'
+                    else:
+                        self._setTime(self._nowT)
+                    self._demoDir = not self._demoDir 
 
     def timeNow(self):
         self._state.set(mode='now')
@@ -183,6 +188,7 @@ class Orrery():
         self._setTime(targetT)
 
     def demoMode(self):
+        self._demoEndT = self._nowT + DEMO_TIME
         self._state.set(mode='demo')
 
     def planetPositions(self):

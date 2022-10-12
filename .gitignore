@@ -3,3 +3,4 @@
 *.pyc
 *.pkl
 *.json
+.DS_Store
