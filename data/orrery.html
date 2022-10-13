@@ -424,12 +424,24 @@
 
     op_states = {
             0: 'Reset',
-            2: 'Deenergized',
+            2: 'De-energized',
             4: 'Soft Error',
             6: 'Waiting for ErrLine',
             8: 'Starting Up',
             10:'Normal'
             };
+
+    error_status = [
+            [0x01,  'De-energized'],
+            [0x02,  'Motor driver'],
+            [0x04,  'Low VIN'],
+            [0x08,  'Kill switch'],
+            [0x10,  'Input invalid'],
+            [0x20,  'Serial'],
+            [0x40,  'Command timeout'],
+            [0x80,  'ERR line high']
+            ];
+
 
     function updateStatus(data) {
         c = document.getElementById("status");
@@ -450,6 +462,18 @@
 				value = value.toLocaleString();
             if (key == 'op_state')
                 value = op_states[value];
+            else if (key == 'error_status') {
+                words = [];
+                for ([mask, description] of error_status) {
+                    if (value & mask)
+                        words.push(description);
+                }
+                if (words.length) {
+                    value = words.join(', ');
+                } else {
+                    value = 'Clear';
+                }
+            }
 			tc.textContent = value;
 			tc.className = "status_text";
 
