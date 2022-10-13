@@ -2,6 +2,7 @@ import json
 from json.decoder import JSONDecodeError
 import netifaces
 
+SETTINGS_FILENAME = "settings.json"
 
 # Determine the default access point ssid based on the MAC address
 IFNAME = 'wlan0'
@@ -28,7 +29,7 @@ class Settings():
     Application settings.
     """
 
-    def __init__(self, fileName):
+    def __init__(self, fileName=SETTINGS_FILENAME):
         self._fileName = fileName
         try:
             with open(self._fileName, 'r') as f:

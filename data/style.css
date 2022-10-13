@@ -144,6 +144,14 @@ button.apply 	{background-color: yellow; color: black;}
 	height: 64px;
 }
 
+#icon-usage img {
+    position: absolute;
+    top: 216;
+    right: 8px;
+    width: 64px;
+    height: 64px;
+}
+
 .icon-selected {
 	opacity: .2;
 }

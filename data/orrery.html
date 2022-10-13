@@ -62,12 +62,16 @@
 					</table>
 				</div>
 			</div>
+            <div id="mode_usage">
+                <div id="usage"></div>
+            </div>
 		</div>
 	</div>
 	<div>
 		<div id="icon-orrery"><img src="/data/icon-orbit.png" onclick="setMode('orrery')"></div>
 		<div id="icon-expert"><img src="/data/icon-expert.png" onclick="setMode('expert')"></div>
 		<div id="icon-admin"><img src="/data/icon-admin.png" onclick="setMode('admin')"></div>
+        <div id="icon-usage"><img src="/data/icon-usage.png" onclick="setMode('usage')"></div>
 	</div>
 <script src='/dofonts.js'></script>
 <script src="circletext.js"></script>
@@ -136,8 +140,12 @@
 
 	function swupdate() {
 		if (confirm("\nUPDATE SOFTWARE\n\nThe orrery needs to be connected to the internet.\nThe orrery will REBOOT!\nForce reload the webpage when finished.\n\nAre you sure?"))
-			postData('/api/swupdate')
+			postData('/api/swupdate');
 	}
+
+    function getUsage() {
+        return( postData('/api/usage');
+    }
 </script>
 <script>
 	// Planets, sizes, and colors
@@ -548,7 +556,8 @@
 	modes = [
 		{ 'mode': 'orrery', 'id': 'mode_orrery',	'icon': 'icon-orrery' },
 		{ 'mode': 'expert', 'id': 'mode_expert',	'icon': 'icon-expert' },
-		{ 'mode': 'admin',  'id': 'mode_admin',		'icon': 'icon-admin' }
+		{ 'mode': 'admin',  'id': 'mode_admin',		'icon': 'icon-admin' },
+        { 'mode': 'usage',  'id': 'mode_usage',     'icon': 'icon-usage' }
 	];
 
 	function setMode(mode) {

@@ -111,6 +111,11 @@ def swupdate():
     os.system('reboot')
     return json.dumps({})
 
+@app.get('/api/usage')
+@app.post('/api/usage')
+def usage():
+    return json.dumps(orrery.usage)
+
 @app.get('/api/getsettings')
 @app.post('/api/getsettings')
 def getSettings():

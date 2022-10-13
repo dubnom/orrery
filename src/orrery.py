@@ -14,7 +14,6 @@ from usage import *
 USAGE_WRITE_PERIOD = 5 * 60     # Number of seconds between file updates
 USAGE_FILE_NAME = "usage.json"
 
-SETTINGS_FILENAME = "settings.json"
 STATE_FILENAME = "position.json"
 STEPS_PER_ROTATION = 400 * 8
 DAYS_IN_MERCURY_YEAR = 88
@@ -135,9 +134,12 @@ class Orrery():
         self.applySettings()
 
     def applySettings(self):
-        self._settings = Settings(SETTINGS_FILENAME)
+        self._settings = Settings()
         self._tic.setMaxSpeed( self._settings.settings['maxSpeed'] )
         self._tic.setCurrentLimit( t500_lookupCurrent( self._settings.settings['current'] ))
+
+    def getUsage(self):
+        return self._usage
 
     def _timeToPosition(self, t: datetime) -> float:
         td = t - datetime(1,1,1,0,0,0)
