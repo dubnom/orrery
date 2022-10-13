@@ -416,7 +416,16 @@
 			['Target Position', 'target_pos']
 			];
 
-	function updateStatus(data) {
+    op_states = {
+            0: 'Reset',
+            2: 'Deenergized',
+            4: 'Soft Error',
+            6: 'Waiting for ErrLine',
+            8: 'Starting Up',
+            10:'Normal'
+            };
+
+    function updateStatus(data) {
         c = document.getElementById("status");
         fontSize = c.style.fontSize;
 
@@ -433,6 +442,8 @@
 			units = data.status[key][1];
 			if (value >= 1000)
 				value = value.toLocaleString();
+            if (key == 'op_state')
+                value = op_states[value];
 			tc.textContent = value;
 			tc.className = "status_text";
 
