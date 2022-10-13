@@ -8,8 +8,13 @@ from threading import Thread, Event
 from random import randint, random
 from tic import TicController, T500_CURRENTS, t500_lookupCurrent, TicList
 from settings import *
+from usage import *
 
 
+USAGE_WRITE_PERIOD = 5 * 60     # Number of seconds between file updates
+USAGE_FILE_NAME = "usage.json"
+
+SETTINGS_FILENAME = "settings.json"
 STATE_FILENAME = "position.json"
 STEPS_PER_ROTATION = 400 * 8
 DAYS_IN_MERCURY_YEAR = 88
@@ -91,7 +96,7 @@ class Orrery():
 
     _tic = None
     _targetPos = 0
-    _targetT = _nowT = _demoEndT = datetime.now()
+    _targetT = _nowT = _demoEndT = _usageT = datetime.now()
     _demoDir = True
 
     def __init__(self, ticID=None):
@@ -109,8 +114,9 @@ class Orrery():
             raise OrreryError(f"TIC motor controller couldn't be found '{ticID}'")
 
         # Set up state
-        position = self._timeToPosition(datetime.utcnow())
+        position = self._prevPos = self._timeToPosition(datetime.utcnow())
         self._state = PersistentState(STATE_FILENAME, position)
+        self._usage = Usage(USAGE_FILE_NAME)
 
         # FIX: SET THE POSITION NO MATTER WHAT.
         # Power-up the tic, reset position if the state couldn't be trusted
@@ -129,7 +135,7 @@ class Orrery():
         self.applySettings()
 
     def applySettings(self):
-        self._settings = Settings()
+        self._settings = Settings(SETTINGS_FILENAME)
         self._tic.setMaxSpeed( self._settings.settings['maxSpeed'] )
         self._tic.setCurrentLimit( t500_lookupCurrent( self._settings.settings['current'] ))
 
@@ -143,6 +149,9 @@ class Orrery():
         return datetime(1,1,1,0,0,0) + timedelta(jd)
 
     def _updateOrreryPos(self, orreryPos: float):
+        steps = abs(self._prevPos-self._state.state['position'])
+        self._usage.add('orrery_days', steps / STEPS_PER_DAY)
+        self._prevPos = self._state.state['position']
         if int(self._state.state['position']) == int(self._targetPos):
             self._state.set(state='stopped', position=orreryPos)
         else:
@@ -156,6 +165,14 @@ class Orrery():
             self.resume()
 
     def _updateNow(self, nowT: datetime):
+        # Update usage, and save every so often
+        elapsedSeconds = (nowT - self._nowT).total_seconds()
+        self._usage.add('seconds_powered', elapsedSeconds)
+        if (nowT - self._usageT).total_seconds() > USAGE_WRITE_PERIOD:
+            self._usage.save()
+            self._usageT = nowT
+
+        # Do things based on the mode of the orrery
         self._nowT = nowT
         if self._state.state['mode'] == 'now':
             self._setTime(nowT)
@@ -188,6 +205,7 @@ class Orrery():
     def demoMode(self):
         self._demoEndT = self._nowT + timedelta(minutes=self._settings.settings['demo_time'])
         self._state.set(mode='demo')
+        self._usage.add('demo_requests', 1)
 
     def planetPositions(self):
         if self._state.state['state'] == 'moving':
