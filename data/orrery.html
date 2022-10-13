@@ -393,8 +393,14 @@
 		];
 
 		el = document.getElementById(parent);
-		for (button of buttons) {
+        old_lvl = 1;
+        for (button of buttons) {
 			if (button[3] <= lvl) {
+                if (old_lvl != button[3]) {
+                    br = document.createElement('br');
+                    el.appendChild(br);
+                    old_lvl = button[3];
+                }
 				butt = document.createElement('button');
 				butt.innerHTML = button[0];
 				butt.onclick = new Function( button[1] );
