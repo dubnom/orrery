@@ -114,7 +114,7 @@ def swupdate():
 @app.get('/api/usage')
 @app.post('/api/usage')
 def usage():
-    return json.dumps(orrery.usage)
+    return json.dumps(orrery.getUsage().usage)
 
 @app.get('/api/getsettings')
 @app.post('/api/getsettings')

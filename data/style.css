@@ -43,6 +43,25 @@ button {
 	white-space: nowrap;
 }
 
+#usage {
+	outline: thick double purple;
+	background-color: #181818;
+	display: flex;
+	justify-content: center;
+}
+
+.usage_table {
+	font-family: 'electrolize';
+	padding: 20px;
+    width: 80%;
+	align-self: center;
+	font-size: inherit;
+}
+
+.usage_text {
+	white-space: nowrap;
+}
+
 #set_table {
 	font-family: 'electrolize';
 	font-size: inherit;

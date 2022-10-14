@@ -143,9 +143,6 @@
 			postData('/api/swupdate');
 	}
 
-    function getUsage() {
-        return( postData('/api/usage');
-    }
 </script>
 <script>
 	// Planets, sizes, and colors
@@ -530,7 +527,44 @@
 			}});
 	}
 
-	function getCountries() {
+    function updateUsage() {
+        postData('/api/usage').then(usage => {
+            t = document.createElement("table");
+            t.className = "usage_table";
+            function addLine(name, value) {
+                tr = t.insertRow();
+                tc = tr.insertCell();
+                tc.textContent = name;
+                tc.className = "usage_text";
+
+                tc = tr.insertCell();
+                tc.textContent = value;
+                tc.className = "usage_text";
+                tc.style.textAlign = 'right';
+            }
+
+            d = usage['seconds_powered'];
+            years = Math.floor(d / (86400*365.25));     d -= years * (86400*365.25);
+            days  = Math.floor(d / 86400);              d -= days * 86400;
+            hours = Math.floor(d / 3600);               d -= hours * 3600;
+            secondsPowered = years.toLocaleString(undefined, {maximumFractionDigits:0}) + ' years, ' +
+                         days.toLocaleString(undefined, {maximumFractionDigits:0}) + ' days, ' +
+                         hours.toLocaleString(undefined, {maximumFractionDigits:0}) + ' hours';
+            addLine('Time Powered', secondsPowered);
+            d = usage['orrery_days'];
+            years = Math.floor(d / 365.25);             d -= Math.floor(years * 365.25);
+            days = Math.floor(d) 
+            orreryDays = years.toLocaleString(undefined, {maximumFractionDigits:0}) + ' years, ' +
+                         days.toLocaleString(undefined, {maximumFractionDigits:0}) + ' days';
+            addLine('Orrery Motion', orreryDays);
+            addLine('Demo Requests', usage['demo_requests']);
+            addLine('Started', usage['started'].substr(0,19));
+            addLine('Updated', usage['updated'].substr(0,19));
+            document.getElementById('usage').replaceChildren(t);
+        })
+    }
+
+    function getCountries() {
 		postData('/countries').then(countries => {
 				var select = document.getElementById("wifi_country");
 				for (let country of countries) {
@@ -610,6 +644,9 @@
 		setSize("admin_buttons", fw, controls_height / 26, controls_height * .5 / 22);
 		setSize("status", fw, controls_height * 7 / 26, controls_height * 1 / 26 * .5);
 		setSize("settings", fw, controls_height * 17 / 26, controls_height * 1 / 26 * .5);
+
+        // Usage mode layout
+        setSize("usage", fw, controls_height / 2, controls_height / 26 * .5);
 	}
 
 	function updateClock(data) {
