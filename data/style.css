@@ -106,6 +106,7 @@ button.demo 		{background-color: #08A; color: #FFF;}
 button.now			{background-color: #0F0; color: #111;}
 button.resetnow 	{background-color: #F00; color: #FFF;}
 button.reboot 		{background-color: #F00; color: #FF0;}
+button.shutdown     {background-color: #111; color: #F00;}
 button.swupdate		{background-color: #BBB; color: #000;}
 
 button.apply 	{background-color: yellow; color: black;}

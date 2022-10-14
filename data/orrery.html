@@ -139,6 +139,11 @@
 			postData('/api/reboot');
 	}
 
+    function shutdown() {
+        if (confirm("\nSHUTDOWN and HALT!\n\nThis will shutdown the orrery computer\nso it can be unplugged safely.\nPlug the computer back in to restart.\n\nAre you sure?"))
+            postData('/api/shutdown');
+    }
+
 	function swupdate() {
 		if (confirm("\nUPDATE SOFTWARE\n\nThe orrery needs to be connected to the internet.\nThe orrery will REBOOT!\nForce reload the webpage when finished.\n\nAre you sure?"))
 			postData('/api/swupdate');
@@ -395,6 +400,7 @@
 				[ "Demo",			"demo()",		"demo",			1 ],
 				[ "Reset Now",		"resetNow()",	"resetnow",		2 ],
 				[ "Reboot",			"reboot()",		"reboot",		2 ],
+                [ "Shutdown",       "shutdown()",   "shutdown",     2 ],
 				[ "SW Update",		"swupdate()",	"swupdate",		2 ]
 		];
 

@@ -104,9 +104,18 @@ def reboot():
     os.system('reboot')
     return json.dumps({})
 
+@app.get('/api/shutdown')
+@app.post('/api/shutdown')
+def shutdown():
+    orrery.halt()
+    orrery.deenergize()
+    os.system('shutdown -h now')
+    return json.dumps({})
+
 @app.get('/api/swupdate')
 @app.post('/api/swupdate')
 def swupdate():
+    orrery.halt()
     os.system("git pull")
     os.system('reboot')
     return json.dumps({})
