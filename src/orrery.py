@@ -234,6 +234,7 @@ class Orrery():
                 "target_pos": (self._tic.getTargetPosition(), 'steps'),
                 "current": (T500_CURRENTS[self._tic.getCurrentLimit()], 'amps'),
                 }
+        results['usage'] = self._usage.usage
         return results
 
     def halt(self):

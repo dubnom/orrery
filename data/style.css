@@ -43,9 +43,20 @@ button {
 	white-space: nowrap;
 }
 
-#usage {
+#usage_title {
+    font-family: 'electrolize';
+    align-self: center;
+    padding: 20px;
+    font-size: xxx-large;
+    text-align: center;
+}
+
+#mode_usage {
 	outline: thick double purple;
 	background-color: #181818;
+}
+
+#usage {
 	display: flex;
 	justify-content: center;
 }
