@@ -663,6 +663,11 @@
 		else if (data.state.mode == 'demo')		el.style.color = "#039DFC"; 
 		else									el.style.color = "#FF0000";
         el.textContent = data.time;
+        
+        if (data.state.mode == 'demo')
+            el.style.outlineColor = 'cyan';
+        else
+            el.style.outlineColor = 'black';
 
 		seconds = Math.abs(data.status.cur_pos[0] - data.status.target_pos[0]) / data.status.max_speed[0];
 		minutes = Math.floor(seconds / 60);

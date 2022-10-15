@@ -205,6 +205,7 @@ button.apply 	{background-color: yellow; color: black;}
 	font-size: 300%;
 	font-family: "D14MR";
 	text-align: center;
+    outline: thick double black;
 }
 
 #time_to_destination {
