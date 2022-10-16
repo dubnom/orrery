@@ -9,6 +9,7 @@ defaults = {
     'demo_requests': 0,
     'started': None,
     'updated': None,
+    'restarts': 0,
 }
 
 

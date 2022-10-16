@@ -569,6 +569,10 @@
         }
 
         usage = data['usage']
+        addLine('Started', usage['started'].substr(0,19));
+        addLine('Updated', usage['updated'].substr(0,19));
+        addLine('Code Restarts', usage['restarts']);
+
         d = usage['seconds_powered'];
         years = Math.floor(d / (86400*365.25));     d -= years * (86400*365.25);
         days  = Math.floor(d / 86400);              d -= days * 86400;
@@ -577,15 +581,15 @@
                      days.toLocaleString(undefined, {maximumFractionDigits:0}) + ' days, ' +
                      hours.toLocaleString(undefined, {maximumFractionDigits:0}) + ' hours';
         addLine('Time Powered', secondsPowered);
+
         d = usage['orrery_days'];
         years = Math.floor(d / 365.25);             d -= Math.floor(years * 365.25);
         days = Math.floor(d) 
         orreryDays = years.toLocaleString(undefined, {maximumFractionDigits:0}) + ' years, ' +
                      days.toLocaleString(undefined, {maximumFractionDigits:0}) + ' days';
         addLine('Orrery Motion', orreryDays);
+
         addLine('Demo Requests', usage['demo_requests']);
-        addLine('Started', usage['started'].substr(0,19));
-        addLine('Updated', usage['updated'].substr(0,19));
         document.getElementById('usage').replaceChildren(t);
     }
 

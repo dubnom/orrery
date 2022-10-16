@@ -115,7 +115,10 @@ class Orrery():
         # Set up state
         position = self._prevPos = self._timeToPosition(datetime.utcnow())
         self._state = PersistentState(STATE_FILENAME, position)
+
         self._usage = Usage(USAGE_FILE_NAME)
+        self._usage.add('restarts', 1)
+        self._usage.save()
 
         # FIX: SET THE POSITION NO MATTER WHAT.
         # Power-up the tic, reset position if the state couldn't be trusted
