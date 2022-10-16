@@ -31,6 +31,8 @@
 			<div id="mode_admin">
 				<div id="admin_buttons"></div>
 				<div id="status"></div>
+            </div>
+            <div id="mode_settings">
 				<div id="settings">
 					<table id="set_table">
 						<tr><th colspan=2>Orrery Settings</th></tr>
@@ -71,8 +73,9 @@
 	<div>
 		<div id="icon-orrery"><img src="/data/icon-orbit.png" onclick="setMode('orrery')"></div>
 		<div id="icon-expert"><img src="/data/icon-expert.png" onclick="setMode('expert')"></div>
-		<div id="icon-admin"><img src="/data/icon-admin.png" onclick="setMode('admin')"></div>
         <div id="icon-usage"><img src="/data/icon-usage.png" onclick="setMode('usage')"></div>
+		<div id="icon-admin"><img src="/data/icon-admin.png" onclick="setMode('admin')"></div>
+        <div id="icon-settings"><img src="/data/icon-settings.png" onclick="setMode('settings')"></div>
 	</div>
 <script src='/dofonts.js'></script>
 <script src="circletext.js"></script>
@@ -140,12 +143,12 @@
 	}
 
     function shutdown() {
-        if (confirm("\nSHUTDOWN and HALT!\n\nThis will shutdown the orrery computer\nso it can be unplugged safely.\nPlug the computer back in to restart.\n\nAre you sure?"))
+        if (confirm("\nSHUTDOWN and HALT!\n\nThis will shutdown the orrery computer\nso it can be unplugged safely (wait 30 seconds).\nPlug the computer back in to restart.\n\nAre you sure?"))
             postData('/api/shutdown');
     }
 
 	function swupdate() {
-		if (confirm("\nUPDATE SOFTWARE\n\nThe orrery needs to be connected to the internet.\nThe orrery will REBOOT!\nForce reload the webpage when finished.\n\nAre you sure?"))
+		if (confirm("\nUPDATE SOFTWARE\n\nThe orrery needs to be connected to the internet.\nThe orrery will REBOOT!\nForce reload the webpage when finished (about a minute).\n\nAre you sure?"))
 			postData('/api/swupdate');
 	}
 
@@ -619,8 +622,9 @@
 	modes = [
 		{ 'mode': 'orrery', 'id': 'mode_orrery',	'icon': 'icon-orrery' },
 		{ 'mode': 'expert', 'id': 'mode_expert',	'icon': 'icon-expert' },
+        { 'mode': 'usage',  'id': 'mode_usage',     'icon': 'icon-usage' },
 		{ 'mode': 'admin',  'id': 'mode_admin',		'icon': 'icon-admin' },
-        { 'mode': 'usage',  'id': 'mode_usage',     'icon': 'icon-usage' }
+        { 'mode': 'settings', 'id': 'mode_settings','icon': 'icon-settings' }
 	];
 
 	function setMode(mode) {

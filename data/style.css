@@ -163,15 +163,7 @@ button.apply 	{background-color: yellow; color: black;}
 
 #icon-expert img {
 	position: absolute;
-	top: 72px;
-	right: 8px;
-	width: 64px;
-	height: 64px;
-}
-
-#icon-admin img {
-	position: absolute;
-	top: 144px;
+	top: 108px;
 	right: 8px;
 	width: 64px;
 	height: 64px;
@@ -179,7 +171,31 @@ button.apply 	{background-color: yellow; color: black;}
 
 #icon-usage img {
     position: absolute;
-    top: 216;
+    top: 208;
+    right: 8px;
+    width: 64px;
+    height: 64px;
+}
+
+#icon-admin img {
+	position: absolute;
+	top: 308px;
+	right: 8px;
+	width: 64px;
+	height: 64px;
+}
+
+#icon-settings img {
+    position: absolute;
+    top: 408;
+    right: 8px;
+    width: 64px;
+    height: 64px;
+}
+
+#icon-usage img {
+    position: absolute;
+    top: 208;
     right: 8px;
     width: 64px;
     height: 64px;
