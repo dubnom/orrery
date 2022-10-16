@@ -141,6 +141,11 @@ class Orrery():
     def getUsage(self):
         return self._usage
 
+    def shutdown(self):
+        self.halt()
+        self.deenergize()
+        self._usage.save()
+
     def _timeToPosition(self, t: datetime) -> float:
         td = t - datetime(1,1,1,0,0,0)
         jd = td.days + (td.seconds / 86400)

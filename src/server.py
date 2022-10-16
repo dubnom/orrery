@@ -101,21 +101,21 @@ def resetNow():
 @app.get('/api/reboot')
 @app.post('/api/reboot')
 def reboot():
+    orrery.shutdown()
     os.system('reboot')
     return json.dumps({})
 
 @app.get('/api/shutdown')
 @app.post('/api/shutdown')
 def shutdown():
-    orrery.halt()
-    orrery.deenergize()
+    orrery.shutdown()
     os.system('shutdown -h now')
     return json.dumps({})
 
 @app.get('/api/swupdate')
 @app.post('/api/swupdate')
 def swupdate():
-    orrery.halt()
+    orrery.shutdown()
     os.system("git pull")
     os.system('reboot')
     return json.dumps({})

@@ -17,6 +17,7 @@ body {
 button {
 	font-family: 'electrolize';
 	font-size: inherit;
+    border-radius: 10%;
 }
 
 #settings {
@@ -47,7 +48,7 @@ button {
     font-family: 'electrolize';
     align-self: center;
     padding: 20px;
-    font-size: xxx-large;
+    font-size: 250%;
     text-align: center;
 }
 
@@ -98,6 +99,7 @@ button {
 button.large	{background-color: #C55; color: #FFF;}
 button.medium 	{background-color: #AA0; color: #FFF;}
 button.small 	{background-color: #0A0; color: #FFF;}
+button.disabled {background-color: #555; color: #444;}
 
 button.halt 		{background-color: #800; color: #FFF;}
 button.deenergize 	{background-color: #F80; color: #000;}

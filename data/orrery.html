@@ -337,7 +337,19 @@
 </script>
 <script>
 	// Expert controls
-	moveTable = ['Steps', 'Days', 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
+	moveTable = [
+            // Type,    Est. Number of Earth days
+            ['Steps',   1/3200], 
+            ['Days',    1],
+            ['Mercury', 88],
+            ['Venus',   225],
+            ['Earth',   365],
+            ['Mars',    687],
+            ['Jupiter', 4333],
+            ['Saturn',  10756],
+            ['Uranus',  30687],
+            ['Neptune', 60190]
+            ];
 
 	amounts = [
 			[-100, 	'large'],
@@ -350,9 +362,11 @@
 			];
 
 	function makeExpertControls() {
+        // The MAX_DAYS constant is used to limit the number of days the orrery is requested to move
+        let MAX_DAYS = 100000;
 		t = document.createElement('table');
 		t.id = 'expert_table';
-		for (name of moveTable) {
+		for ([name, days] of moveTable) {
 			tr = t.insertRow();
 			for ([amt, className] of amounts) { 
 				tc = tr.insertCell();
@@ -366,6 +380,11 @@
 					butt.className = className;
 					butt.innerHTML = amt;
 					butt.onclick = new Function( "move("+amt+",'"+name+"')");
+                    if (Math.abs(amt * days) > MAX_DAYS) {
+                        butt.className = "disabled";
+                        butt.disabled = true;
+                        butt.opacity = '60%';
+                    }
 					tc.replaceChildren(butt);
 				}
 			}
