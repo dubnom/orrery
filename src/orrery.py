@@ -22,15 +22,15 @@ STEPS_PER_DAY = STEPS_PER_ROTATION / DAYS_IN_MERCURY_YEAR
 planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
 
 planetInfo = {
-        'Mercury': (87.97, 0.448407, 5.05985, 0, 0, 1),
-        'Venus': (224.7, 0.727912, 5.80397, 0, 0, 2),
-        'Earth': (365.256, 0.986066, 2.38918, 0, 0, 3),
-        # 'Starman': (557, .75+.98*3, 2.38918, .75*cos(sm_ang), .75*sin(sm_ang), 2.94 + .75),
-        'Mars': (686.98, 1.59736, 3.67414, 0, 0, 4),
-        'Jupiter': (4332.59, 5.42634, 3.85817, 0, 0, 5),
-        'Saturn': (10755.7, 10.0658, 4.7359, 0, 0, 6),
-        'Uranus': (30687.2, 19.8964, 0.479293, 0, 0, 7),
-        'Neptune': (60190, 29.9449, 5.9957, 0, 0, 8),
+        # Planet    Days/Year   AU Distance aOffset  x, y, N
+        'Mercury':  ( 87.9691,  0.448407,   290.808, 0, 0, 1),
+        'Venus':    (224.7,     0.727912,   333.143, 0, 0, 2),
+        'Earth':    (365.2564,  0.986066,   137.356, 0, 0, 3),
+        'Mars':     (686.98,    1.59736,    210.867, 0, 0, 4),
+        'Jupiter':  (4332.59,   5.42634,    221.129, 0, 0, 5),
+        'Saturn':   (10755.7,   10.0658,    271.591, 0, 0, 6),
+        'Uranus':   (30687.2,   19.8964,     27.483, 0, 0, 7),
+        'Neptune':  (60190,     29.9449,    343.801, 0, 0, 8),
         }
 
 # The orrery supports simple circular orbits.
@@ -41,8 +41,8 @@ epoch = datetime(2018,2,6)
 def planetLocation(name, t):
     daysPerYear, radius, aOffset, xOffset, yOffset, pn = planetInfo[name]
     days = (t - epoch).days
-    angle = radians(360*days/daysPerYear) + aOffset
-    return degrees(angle % (2*pi)), radius, xOffset, yOffset, pn
+    angle = (aOffset + 360*days/daysPerYear) % 360
+    return angle, radius, xOffset, yOffset, pn
 
 
 class OrreryError(Exception):

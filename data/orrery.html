@@ -279,7 +279,7 @@
 		}
 		ctx.stroke();
 
-		let sunSize = radius * .9;
+		let sunSize = radius * .85;
 		ctx.drawImage(sunImage, size-sunSize, size-sunSize, sunSize*2, sunSize*2);
 		
 		positions = data.positions;
@@ -292,7 +292,7 @@
             ctx.stroke();
 
             // Draw the planet
-            let angle = positions[name][0];
+            let angle = positions[name][0] - (360 * 10 / 365);
             let x = Math.cos(radians(angle)) * radius;
             let y = Math.sin(radians(angle)) * radius;
 
