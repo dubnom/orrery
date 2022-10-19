@@ -21,23 +21,24 @@ STEPS_PER_DAY = STEPS_PER_ROTATION / DAYS_IN_MERCURY_YEAR
 
 planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
 
+epoch = datetime(2018,7,21)
+
 planetInfo = {
         # Planet    Days/Year   AU Distance aOffset  x, y, N
-        'Mercury':  ( 87.9691,  0.448407,   290.808, 0, 0, 1),
-        'Venus':    (224.7,     0.727912,   333.143, 0, 0, 2),
-        'Earth':    (365.2564,  0.986066,   137.356, 0, 0, 3),
-        'Mars':     (686.98,    1.59736,    210.867, 0, 0, 4),
-        'Jupiter':  (4332.59,   5.42634,    221.129, 0, 0, 5),
-        'Saturn':   (10755.7,   10.0658,    271.591, 0, 0, 6),
-        'Uranus':   (30687.2,   19.8964,     27.483, 0, 0, 7),
-        'Neptune':  (60190,     29.9449,    343.801, 0, 0, 8),
+        'Mercury':  ( 87.9691,  0.448407,   258.916, 0, 0, 1),
+        'Venus':    (224.7,     0.727912,   237.995, 0, 0, 2),
+        'Earth':    (365.2564,  0.986066,   297.958, 0, 0, 3),
+        'Mars':     (686.98,    1.59736,    300.062, 0, 0, 4),
+        'Jupiter':  (4332.59,   5.42634,    233.722, 0, 0, 5),
+        'Saturn':   (10755.7,   10.0658,    276.302, 0, 0, 6),
+        'Uranus':   (30687.2,   19.8964,     29.258, 0, 0, 7),
+        'Neptune':  (60190,     29.9449,    344.523, 0, 0, 8),
         }
 
 # The orrery supports simple circular orbits.
 # The location of the planets (and Starman) can be calculated by taking a starting point,
 # the 'epoch' and incorporating the orbital rate * elapsed time.
 # StarMan requires an extra offset (x,y) to handle its offset from the sun.
-epoch = datetime(2018,2,6)
 def planetLocation(name, t):
     daysPerYear, radius, aOffset, xOffset, yOffset, pn = planetInfo[name]
     days = (t - epoch).days
