@@ -164,6 +164,7 @@ class Orrery():
         self._usage.add('orrery_days', steps / STEPS_PER_DAY)
         self._prevPos = self._state.state['position']
         if int(self._state.state['position']) == int(self._targetPos):
+            self._tic.setCurrentLimit( t500_lookupCurrent( self._settings.settings['hold_current'] ))
             self._state.set(state='stopped', position=orreryPos)
         else:
             self._state.set(state='moving', position=orreryPos)
@@ -256,6 +257,7 @@ class Orrery():
         self._tic.clearDriverError()
         self._tic.exitSafeStart()
         self._tic.energize()
+        self._tic.setCurrentLimit( t500_lookupCurrent( self._settings.settings['current'] ))
         self._tic.setTargetPosition(int(self._targetPos))
 
     def resetNow(self):

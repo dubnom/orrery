@@ -14,6 +14,7 @@ defaults = {
     'demo_time': 5,
     'maxSpeed': 32000000,
     'current': .495,
+    'hold_current': .2,
     'wifi_mode': 'server',
     'wifi_country': 'US',
     'ap_ssid': ap_ssid,

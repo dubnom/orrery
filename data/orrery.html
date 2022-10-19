@@ -38,6 +38,7 @@
 						<tr><th colspan=2>Orrery Settings</th></tr>
 						<tr><td>Speed</td><td><input id="max_speed" type="text"/> (days per second)</td></tr>
 						<tr><td>Current</td><td><input id="current" type="text"/> (amps)</td></tr>
+						<tr><td>Hold Current</td><td><input id="hold_current" type="text"/> (amps)</td></tr>
 						<tr><td>Time zone</td><td><select id="timezone" name="timezone" disabled></select></td></tr>
                         <tr><td>Demo time</td><td><input id="demo_time" type="text"> (minutes)</td></tr>
 
@@ -594,6 +595,7 @@
 		postData('/api/getsettings').then(settings => {
 				document.getElementById('max_speed').value = Math.round(88 * ((settings['maxSpeed'] / 10000) / 3200));
 				document.getElementById('current').value = settings['current'];
+				document.getElementById('hold_current').value = settings['hold_current'];
 				radioSetValue('wifi_mode', settings['wifi_mode']);
 				document.getElementById('wifi_country').value = settings['wifi_country'];
 				document.getElementById('timezone').value = settings['timezone'];
@@ -612,6 +614,7 @@
 			postData('/api/setsettings', {"settings": {
 					"maxSpeed": Math.floor((parseFloat(document.getElementById('max_speed').value)/88)*3200*10000),
 					"current": parseFloat(document.getElementById('current').value),
+					"hold_current": parseFloat(document.getElementById('hold_current').value),
 					"timezone": document.getElementById('timezone').value,
 					"wifi_mode": radioGetValue('wifi_mode'),
 					"wifi_country": document.getElementById('wifi_country').value,
