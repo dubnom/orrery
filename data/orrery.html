@@ -157,12 +157,12 @@
 	// Planets, sizes, and colors
 	let pInfo = new Map([
 		['Mercury', [ 2, '#909090']],
-		['Venus',   [ 4, '#B07000']],
+		['Venus',   [ 4, '#D09000']],
 		['Earth',   [ 4, '#3050FF']],
 		['Mars',    [ 3, '#B01010']],
 		['Jupiter', [ 9, '#907005']],
 		['Saturn',  [ 8, '#909000']],
-		['Uranus',  [ 6, '#15B015']],
+		['Uranus',  [ 6, '#157065']],
 		['Neptune', [ 6, '#4040FF']]
 	]);
 
@@ -189,6 +189,9 @@
 	    return new Date(date.setDate(day)); // add the number of days
 	}
 
+    let dateShift = 10;
+    let DATE_TO_DEG = 360/365;
+
 	// Table of Zodiac names
 	let zodiac = [
 		"Aires", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
@@ -203,6 +206,18 @@
 
 	function radians(a) {return a * Math.PI / 180;}
 
+    // Helper functions for calculating x,y from days or angles
+    function rotateDays(day, radius, xc=0, yc=0) {
+       return rotate(day * DATE_TO_DEG, radius, xc, yc);
+    }
+
+    function rotate(angle, radius, xc, yc) {
+        let a = radians(angle);
+        let x = xc + Math.cos(a) * radius;
+        let y = yc - Math.sin(a) * radius;
+        return {x, y};
+    }
+
     function updatePlanetarium(data) {
 		el = document.getElementById("planetarium");
 		width = parseFloat(el.style.width);
@@ -213,7 +228,6 @@
         var ctx = c.getContext("2d");
         let size = Math.min(width, height) / 2;
         let dist = size / 10;
-        var radius = dist;
 
         ctx.clearRect(0, 0, width, height);
 
@@ -221,30 +235,55 @@
         ctx.beginPath();
         ctx.arc(size, size, size-1, 0, 2*Math.PI);
         ctx.setLineDash([100,0]);
-        ctx.strokeStyle = '#888';
+        ctx.strokeStyle = '#AAA';
         ctx.stroke();
 
-		// Draw the Heliocentric Zodiac names and separators
+        // Draw a background gradient
+        var gradient = ctx.createRadialGradient(size, size, 0, size, size, dist * 9);
+        gradient.addColorStop(0 / 6, 'rgba(255,0,0,.8)');       //'red'
+        gradient.addColorStop(1 / 6, 'rgba(255,165,0,.6)');     //'orange'
+        gradient.addColorStop(2 / 6, 'rgba(255,255,0,.5)');     //'yellow'
+        gradient.addColorStop(3 / 6, 'rgba(0,128,0,.4)');       //'green'
+        gradient.addColorStop(4 / 6, 'rgba(0,0,255,.3)');       //'blue'
+        gradient.addColorStop(5 / 6, 'rgba(75,0,130,.2)');      //'indigo'
+        gradient.addColorStop(6 / 6, 'rgba(238,130,238,.1)');   //'violet'
+        ctx.beginPath();
+        ctx.fillStyle = gradient;
+        ctx.arc(size, size, dist * 9, 0, 2*Math.PI);
+        ctx.fill();
+    
+        // Draw the planet orbits
+        positions = data.positions;
+    	ctx.setLineDash([dist/5,dist/1.5]);
+        var radius = dist;
+        for (let [name, values] of pInfo.entries()) {
+            // Draw the orbit
+    	    ctx.setLineDash([radius/12,radius/24]);
+            ctx.beginPath();
+            ctx.arc(size, size, radius, 0, 2*Math.PI);
+            ctx.strokeStyle = values[1];
+            ctx.stroke();
+			radius += dist;
+        }
+
+        // Draw the Heliocentric Zodiac names and separators
         if (zodiacMode == 1) {
             ctx.font = '' + (size / 18) + 'px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.setLineDash([]);
-            ctx.strokeStyle = '#B00';
-            day = 80;
+            ctx.strokeStyle = '#C22';
+            day = 81;
             days = 365.25 / 12.
-            offset = 1; //100.231 - 90;
             for (let name of zodiac) {
-                let a = radians(offset + day * 360 / 365);
-                let x = Math.cos(a) * dist * 9;
-                let y = Math.sin(a) * dist * 9;
+                p = rotateDays(day, dist * 9, size, size);
                 ctx.beginPath();
                 ctx.moveTo(size, size);
-                ctx.lineTo(size + x, size - y);
+                ctx.lineTo(p.x, p.y);
                 ctx.stroke();
 
-                a = offset + (day + days / 2) * (360 / 365);
-                txt = getCircularText(name, dist*9*2, -a, 'center', true, true, ctx.font, size/18, 0, '#B00' );
+                a = (day + days / 2) * DATE_TO_DEG;
+                txt = getCircularText(name, dist*9*2, -a, 'center', true, true, ctx.font, size/18, 0, '#C22' );
                 ctx.drawImage(txt, (width-txt.width)/2, (height-txt.height)/2);
                 day += days;
             }
@@ -253,29 +292,29 @@
 
         // Draw the Geocentric Zodiac names and separators
         if (zodiacMode == 2) {
-            centerX = size + Math.cos(radians((-10*360/365)+data.positions['Earth'][0])) * dist * 3;
-            centerY = size - Math.sin(radians((-10*360/365)+data.positions['Earth'][0])) * dist * 3;
+            p = rotate(data.positions['Earth'][0] - dateShift * DATE_TO_DEG, dist * 3, size, size)
+            centerX = p.x;
+            centerY = p.y;
             ctx.font = '' + (size / 18) + 'px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.setLineDash([]);
-            ctx.strokeStyle = '#0B0';
+            ctx.strokeStyle = 'rgba(0,220,20,.7)';
+            ctx.fillStyle = 'rgba(0,200,20,.7)';
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = 'rgba(0,0,0,3)';
             day = 0;
             days = 365.25 / 12.
-            offset = 0;
-            b = radians(15 * 360 / 365);
             for (let name of zodiac) {
-                let a = radians(offset + day * 360 / 365);
-                let x = Math.cos(a) * dist * 20;
-                let y = Math.sin(a) * dist * 20;
+                p = rotateDays(day, dist * 20, centerX, centerY);
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
-                ctx.lineTo(centerX + x, centerY - y);
+                ctx.lineTo(p.x, p.y);
                 ctx.stroke();
 
-                ctx.fillStyle = "#0B0";
                 ctx.font = "20px serif";
-                ctx.fillText(name, centerX + Math.cos(a+b) * dist * 5, centerY - Math.sin(a+b) * dist * 5); 
+                p = rotateDays(day + days/2, dist * 5, centerX, centerY);
+                ctx.fillText(name, p.x, p.y); 
                 day += days;
             }
             ctx.stroke();
@@ -286,55 +325,51 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 		ctx.setLineDash([]);
-		ctx.strokeStyle = '#888';
+		ctx.strokeStyle = 'rgba(160,160,160,.8)';
 		day = 0;
-        offset = 0;
 		for (let [name, days] of months) {
-			let a = radians(offset + day * 360 / 365);
-			let x = Math.cos(a) * dist * 10;
-            let y = Math.sin(a) * dist * 10;
+            p = rotateDays(day, dist * 10, size, size);
 			ctx.beginPath();
             ctx.moveTo(size, size);
-            ctx.lineTo(size + x, size - y);
+            ctx.lineTo(p.x, p.y);
 			for (d = 1; d < days; d += 1) {
-				a = radians((offset + day + d) * 360 / 365);
-				x = Math.cos(a) * dist * 9;
-            	y = Math.sin(a) * dist * 9;
-				let distance = (d % 7 ? 9.2 : 9.4);
-				ctx.moveTo(size + x, size - y);
-				x = Math.cos(a) * dist * distance;
-            	y = Math.sin(a) * dist * distance;
-				ctx.lineTo(size + x, size - y);
+                p = rotateDays(day + d, dist * 9, size, size);
+				ctx.moveTo(p.x, p.y);
+				let distance = dist * (d % 7 ? 9.2 : 9.4);
+                p = rotateDays(day + d, distance, size, size);
+				ctx.lineTo(p.x, p.y);
 			}
             ctx.stroke();
 
-			a = offset + (day + days / 2) * (360 / 365);
+			a = (day + days / 2) * DATE_TO_DEG;
 			txt = getCircularText(name, dist*10*2, -a, 'center', true, true, ctx.font, size/15, 0, '#FFFFFF' );
 			ctx.drawImage(txt, (width-txt.width)/2, (height-txt.height)/2);
 			day += days;
 		}
-		ctx.stroke();
 
-		let sunSize = radius * .85;
+        // Indicate where the earth is in the calendar
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(240,240,120,.95)";
+        ctx.lineWidth = 3;
+        p = rotate(data.positions['Earth'][0] - dateShift * DATE_TO_DEG, dist * 8.5, size, size)
+        ctx.moveTo(p.x, p.y);
+        p = rotate(data.positions['Earth'][0] - dateShift * DATE_TO_DEG, dist * 9, size, size)
+        ctx.lineTo(p.x, p.y);
+		ctx.stroke();
+        ctx.lineWidth = 1;
+
+        // Draw the sun
+        let sunSize = dist * .85;
 		ctx.drawImage(sunImage, size-sunSize, size-sunSize, sunSize*2, sunSize*2);
 		
-		positions = data.positions;
-    	ctx.setLineDash([dist/5,dist/1.5]);
+        // Draw the planets
+        positions = data.positions;
+        var radius = dist;
         for (let [name, values] of pInfo.entries()) {
-            // Draw the orbit
-            ctx.beginPath();
-            ctx.arc(size, size, radius, 0, 2*Math.PI);
-            ctx.strokeStyle = values[1];
-            ctx.stroke();
-
-            // Draw the planet
-            let angle = positions[name][0] - (360 * 10 / 365);
-            let x = Math.cos(radians(angle)) * radius;
-            let y = Math.sin(radians(angle)) * radius;
-
 			let rrx=values[0]*5;
 			let rr=rrx/2;
-			ctx.drawImage(images[name], size+x-rr, size-y-rr, width=rrx, height=rrx);
+            p = rotate(positions[name][0] - dateShift * DATE_TO_DEG, radius, size-rr, size-rr)
+			ctx.drawImage(images[name], p.x, p.y, width=rrx, height=rrx);
 
 			radius += dist;
         }
@@ -364,7 +399,7 @@
             tc.style.color = values[1];
             tc.className = 'angle';
             tc = tr.insertCell()
-			doy = 365 * ((positions[name][0] - 90) / 360) - 10;
+			doy = 365 * ((positions[name][0] - 90) / 360) - dateShift;
 			d = dateFromDay(doy);
             tc.textContent = d.toString().substring(4,10);
             tc.style.color = values[1];
