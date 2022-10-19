@@ -189,7 +189,7 @@
 	    return new Date(date.setDate(day)); // add the number of days
 	}
 
-    let dateShift = 10;
+    let dateShift = 11;         // Days between the winter solstice and January 1
     let DATE_TO_DEG = 360/365;
 
 	// Table of Zodiac names
@@ -257,67 +257,12 @@
     	ctx.setLineDash([dist/5,dist/1.5]);
         var radius = dist;
         for (let [name, values] of pInfo.entries()) {
-            // Draw the orbit
     	    ctx.setLineDash([radius/12,radius/24]);
             ctx.beginPath();
             ctx.arc(size, size, radius, 0, 2*Math.PI);
             ctx.strokeStyle = values[1];
             ctx.stroke();
 			radius += dist;
-        }
-
-        // Draw the Heliocentric Zodiac names and separators
-        if (zodiacMode == 1) {
-            ctx.font = '' + (size / 18) + 'px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.setLineDash([]);
-            ctx.strokeStyle = '#C22';
-            day = 81;
-            days = 365.25 / 12.
-            for (let name of zodiac) {
-                p = rotateDays(day, dist * 9, size, size);
-                ctx.beginPath();
-                ctx.moveTo(size, size);
-                ctx.lineTo(p.x, p.y);
-                ctx.stroke();
-
-                a = (day + days / 2) * DATE_TO_DEG;
-                txt = getCircularText(name, dist*9*2, -a, 'center', true, true, ctx.font, size/18, 0, '#C22' );
-                ctx.drawImage(txt, (width-txt.width)/2, (height-txt.height)/2);
-                day += days;
-            }
-            ctx.stroke();
-        }
-
-        // Draw the Geocentric Zodiac names and separators
-        if (zodiacMode == 2) {
-            p = rotate(data.positions['Earth'][0] - dateShift * DATE_TO_DEG, dist * 3, size, size)
-            centerX = p.x;
-            centerY = p.y;
-            ctx.font = '' + (size / 18) + 'px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.setLineDash([]);
-            ctx.strokeStyle = 'rgba(0,220,20,.7)';
-            ctx.fillStyle = 'rgba(0,200,20,.7)';
-            ctx.shadowBlur = 5;
-            ctx.shadowColor = 'rgba(0,0,0,3)';
-            day = 0;
-            days = 365.25 / 12.
-            for (let name of zodiac) {
-                p = rotateDays(day, dist * 20, centerX, centerY);
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(p.x, p.y);
-                ctx.stroke();
-
-                ctx.font = "20px serif";
-                p = rotateDays(day + days/2, dist * 5, centerX, centerY);
-                ctx.fillText(name, p.x, p.y); 
-                day += days;
-            }
-            ctx.stroke();
         }
 
         // Draw month names, and separators
@@ -328,9 +273,9 @@
 		ctx.strokeStyle = 'rgba(160,160,160,.8)';
 		day = 0;
 		for (let [name, days] of months) {
-            p = rotateDays(day, dist * 10, size, size);
 			ctx.beginPath();
             ctx.moveTo(size, size);
+            p = rotateDays(day, dist * 10, size, size);
             ctx.lineTo(p.x, p.y);
 			for (d = 1; d < days; d += 1) {
                 p = rotateDays(day + d, dist * 9, size, size);
@@ -369,10 +314,63 @@
 			let rrx=values[0]*5;
 			let rr=rrx/2;
             p = rotate(positions[name][0] - dateShift * DATE_TO_DEG, radius, size-rr, size-rr)
-			ctx.drawImage(images[name], p.x, p.y, width=rrx, height=rrx);
-
+			ctx.drawImage(images[name], p.x, p.y, rrx, rrx);
 			radius += dist;
         }
+        
+        // Draw the Heliocentric Zodiac names and separators
+        if (zodiacMode == 1) {
+            ctx.font = '' + (size / 18) + 'px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.setLineDash([]);
+            ctx.strokeStyle = '#C22';
+            day = 81;
+            period = 365.25 / 12.
+            for (let name of zodiac) {
+                ctx.beginPath();
+                ctx.moveTo(size, size);
+                p = rotateDays(day, dist * 9, size, size);
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+
+                a = (day + period / 2) * DATE_TO_DEG;
+                txt = getCircularText(name, dist*9*2, -a, 'center', true, true, ctx.font, size/18, 0, '#C22' );
+                ctx.drawImage(txt, (width-txt.width)/2, (height-txt.height)/2);
+                day += period;
+            }
+        }
+
+        // Draw the Geocentric Zodiac names and separators
+        if (zodiacMode == 2) {
+            p = rotate(data.positions['Earth'][0] - dateShift * DATE_TO_DEG, dist * 3, size, size)
+            centerX = p.x;
+            centerY = p.y;
+            ctx.font = '' + (size / 18) + 'px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.setLineDash([]);
+            ctx.strokeStyle = 'rgba(0,220,220,.7)';
+            ctx.fillStyle = 'rgba(0,220,220,.7)';
+            ctx.shadowBlur = size / 36;
+            ctx.shadowColor = 'rgba(0,0,0,.9)';
+            day = 0;
+            period = 365.25 / 12.
+            for (let name of zodiac) {
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                p = rotateDays(day, dist * 20, centerX, centerY);
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+
+                ctx.font = "20px serif";
+                p = rotateDays(day + period/2, dist * 5, centerX, centerY);
+                ctx.fillText(name, p.x, p.y); 
+                day += period;
+            }
+            ctx.stroke();
+        }
+
     }
 
     function updateLocations(data) {
