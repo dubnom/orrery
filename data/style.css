@@ -44,6 +44,11 @@ button {
 	white-space: nowrap;
 }
 
+.status_value {
+	white-space: nowrap;
+	justify-content: right;
+}
+
 #usage_title {
     font-family: 'electrolize';
     align-self: center;

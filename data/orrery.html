@@ -551,15 +551,22 @@
         c = document.getElementById("status");
         fontSize = c.style.fontSize;
 
+		function cell(row, text, className="status_text") {
+			tc = row.insertCell();
+			tc.textContent = text;
+			tc.className = className;
+		}
+
 		t = document.createElement('table');
 		t.className = "status_table";
+		tr = t.insertRow();
+		cell(tr, "Version", "status_text");
+		cell(tr, data["version"]);
+
 		for ([name, key] of fields) {
 			tr = t.insertRow();
-			tc = tr.insertCell();
-			tc.textContent = name;
-			tc.className = "status_text";
+			cell(tr, name);
 
-			tc = tr.insertCell();
 			value = data.status[key][0];
 			units = data.status[key][1];
 			if (value >= 1000)
@@ -578,15 +585,12 @@
                     value = 'Clear';
                 }
             }
-			tc.textContent = value;
-			tc.className = "status_text";
+			cell(tr, value, "status_value");
 
-			tc.style.textAlign = 'right';
-			tc = tr.insertCell();
-			if (units.length) {
-				tc.textContent = '(' + units + ')';
-				tc.className = "status_text";
-			}
+			if (units.length)
+				cell(tr, '(' + units + ')');
+			else
+				cell(tr, '');
 		}
 		document.getElementById('status').replaceChildren(t);
 	}

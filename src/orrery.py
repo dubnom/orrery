@@ -11,6 +11,8 @@ from settings import *
 from usage import *
 
 
+VERSION = "1.0"
+
 USAGE_WRITE_PERIOD = 5 * 60     # Number of seconds between file updates
 USAGE_FILE_NAME = "usage.json"
 
@@ -245,6 +247,7 @@ class Orrery():
                 "current": (T500_CURRENTS[self._tic.getCurrentLimit()], 'amps'),
                 }
         results['usage'] = self._usage.usage
+        results['version'] = VERSION
         return results
 
     def halt(self):
