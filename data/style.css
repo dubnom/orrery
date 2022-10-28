@@ -238,8 +238,12 @@ button.apply 	{background-color: yellow; color: black;}
 	text-align: center;
 }
 
-.image	{font-family: "Electrolize"; text-align: center;}
-.name 	{font-family: "Electrolize"; text-align: left;}
-.angle	{font-family: "Electrolize"; text-align: right;}
-.doy 	{font-family: "Electrolize"; text-align: right;}
+#locations {
+    font-family: "Electrolize";
+    align: center;
+}
 
+.image	{font-family: "Electrolize"; text-align: left; width: 10%;}
+.name 	{font-family: "Electrolize"; text-align: left; width: 50%;}
+.angle	{font-family: "Electrolize"; text-align: right; width: 15%;}
+.doy 	{font-family: "Electrolize"; text-align: right; width: 25%;}

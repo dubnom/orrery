@@ -13,6 +13,9 @@ from orrery import Orrery
 from settings import *
 
 
+REFRESH_QUICK   = .125
+REFRESH_NORM    = 1.
+
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',level=logging.ERROR)
 app = Bottle()
 
@@ -159,12 +162,11 @@ def websock():
     ws = request.environ.get('wsgi.websocket')
     if not ws:
         abort(400, 'Expected WebSocket request.')
-
     try:
         while True:
             status = orrery.status()
             ws.send(json.dumps(status))
-            time.sleep(.25 if status['state']['state'] == 'moving' else 1)
+            time.sleep(REFRESH_QUICK if status['state']['state'] == 'moving' else REFRESH_NORM)
     except WebSocketError:
         pass
 

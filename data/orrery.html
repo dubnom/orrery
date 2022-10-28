@@ -236,7 +236,7 @@
         if (size != osize) {
 			osize = size;
 			ocanvas = new OffscreenCanvas(width, height);
-			octx = ocanvas.getContext("cached");
+			octx = ocanvas.getContext('2d');
 			octx.clearRect(0, 0, width, height);
 
 			// Draw bounding circle
@@ -299,13 +299,13 @@
 				octx.drawImage(txt, (width-txt.width)/2, (height-txt.height)/2);
 				day += days;
 			}
-
-			// Draw the sun
-			let sunSize = dist * .85;
-			octx.drawImage(sunImage, size-sunSize, size-sunSize, sunSize*2, sunSize*2);
 		}
 		else
 			ctx.drawImage(ocanvas, 0, 0);
+
+    	// Draw the sun
+		let sunSize = dist * .85;
+		ctx.drawImage(sunImage, size-sunSize, size-sunSize, sunSize*2, sunSize*2);
 
         // Indicate where the earth is in the calendar
         ctx.beginPath();
@@ -388,10 +388,9 @@
         fontSize = parseFloat(c.style.height) / 12;
 
 		t = document.createElement('table');
-        t.style.fontFamily  = 'Electrolize';
+        t.className = 'locations';
 		t.style.fontSize = fontSize;
 		t.style.width = c.style.width;
-		t.align = 'center';
 		positions = data.positions;
         for (let [name, values] of pInfo.entries()) {
             tr = t.insertRow();
