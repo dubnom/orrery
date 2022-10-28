@@ -11,6 +11,8 @@ from settings import *
 from usage import *
 
 
+VERSION = "1.0"
+
 USAGE_WRITE_PERIOD = 5 * 60     # Number of seconds between file updates
 USAGE_FILE_NAME = "usage.json"
 
@@ -97,7 +99,7 @@ class Orrery():
     _tic = None
     _targetPos = 0
     _targetT = _nowT = _demoEndT = _usageT = datetime.now()
-    _demoDir = True
+    _demoGoToPlanet = True
 
     def __init__(self, ticID=None):
         # Discover the ticID if nothing is specified
@@ -193,18 +195,17 @@ class Orrery():
             #   randomly move forward or backward 1 planet year, and then
             #   return to the current time.  Continue until 'now'
             #   or time travel is requested.
-            if self._state.state['state'] == 'stopped':
-                if self._nowT > self._demoEndT:
-                    self._state.state['mode'] = 'now'
+            if self._nowT > self._demoEndT:
+                self._state.state['mode'] = 'now'
+            elif self._state.state['state'] == 'stopped':
+                if self._demoGoToPlanet:
+                    randomPlanet = planets[randint(0, len(planets)-1)]
+                    direction = -1 if random() < .5 else 1
+                    self.moveRelative(direction, randomPlanet)
+                    self._state.state['mode'] = 'demo'
                 else:
-                    if self._demoDir:
-                        randomPlanet = planets[randint(0, len(planets)-1)]
-                        direction = -1 if random() < .5 else 1
-                        self.moveRelative(direction, randomPlanet)
-                        self._state.state['mode'] = 'demo'
-                    else:
-                        self._setTime(self._nowT)
-                    self._demoDir = not self._demoDir 
+                    self._setTime(self._nowT)
+                self._demoGoToPlanet = not self._demoGoToPlanet
 
     def timeNow(self):
         self._state.set(mode='now')
@@ -216,6 +217,7 @@ class Orrery():
 
     def demoMode(self):
         self._demoEndT = self._nowT + timedelta(minutes=self._settings.settings['demo_time'])
+        self._demoGoToPlanet = True
         self._state.set(mode='demo')
         self._usage.add('demo_requests', 1)
 
@@ -245,6 +247,7 @@ class Orrery():
                 "current": (T500_CURRENTS[self._tic.getCurrentLimit()], 'amps'),
                 }
         results['usage'] = self._usage.usage
+        results['version'] = VERSION
         return results
 
     def halt(self):
