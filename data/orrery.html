@@ -220,6 +220,8 @@
 
     ocanvas = null;
 	osize = -1;
+    canvas = null;
+    ctx = null;
 
 	function updatePlanetarium(data) {
         el = document.getElementById("planetarium");
@@ -232,75 +234,68 @@
         let size = Math.min(width, height) / 2;
         let dist = size / 10;
 
-        if (size != osize) {
-			osize = size;
-			ocanvas = new OffscreenCanvas(width, height);
-			octx = ocanvas.getContext('2d');
-			octx.clearRect(0, 0, width, height);
+        ctx.clearRect(0, 0, width, height);
 
-			// Draw bounding circle
-			octx.beginPath();
-			octx.arc(size, size, size-1, 0, 2*Math.PI);
-			octx.setLineDash([100,0]);
-			octx.strokeStyle = '#AAA';
-			octx.stroke();
+        // Draw bounding circle
+        ctx.beginPath();
+        ctx.arc(size, size, size-1, 0, 2*Math.PI);
+        ctx.setLineDash([100,0]);
+        ctx.strokeStyle = '#AAA';
+        ctx.stroke();
 
-			// Draw a background gradient
-			var gradient = octx.createRadialGradient(size, size, 0, size, size, dist * 9);
-			gradient.addColorStop(0 / 6, 'rgba(255,0,0,.8)');       //'red'
-			gradient.addColorStop(1 / 6, 'rgba(255,165,0,.6)');     //'orange'
-			gradient.addColorStop(2 / 6, 'rgba(255,255,0,.5)');     //'yellow'
-			gradient.addColorStop(3 / 6, 'rgba(0,128,0,.4)');       //'green'
-			gradient.addColorStop(4 / 6, 'rgba(0,0,255,.3)');       //'blue'
-			gradient.addColorStop(5 / 6, 'rgba(75,0,130,.2)');      //'indigo'
-			gradient.addColorStop(6 / 6, 'rgba(238,130,238,.1)');   //'violet'
-			octx.beginPath();
-			octx.fillStyle = gradient;
-			octx.arc(size, size, dist * 9, 0, 2*Math.PI);
-			octx.fill();
-		
-			// Draw the planet orbits
-			positions = data.positions;
-			octx.setLineDash([dist/5,dist/1.5]);
-			var radius = dist;
-			for (let [name, values] of pInfo.entries()) {
-				octx.setLineDash([radius/12,radius/24]);
-				octx.beginPath();
-				octx.arc(size, size, radius, 0, 2*Math.PI);
-				octx.strokeStyle = values[1];
-				octx.stroke();
-				radius += dist;
-			}
+        // Draw a background gradient
+        var gradient = ctx.createRadialGradient(size, size, 0, size, size, dist * 9);
+        gradient.addColorStop(0 / 6, 'rgba(255,0,0,.8)');       //'red'
+        gradient.addColorStop(1 / 6, 'rgba(255,165,0,.6)');     //'orange'
+        gradient.addColorStop(2 / 6, 'rgba(255,255,0,.5)');     //'yellow'
+        gradient.addColorStop(3 / 6, 'rgba(0,128,0,.4)');       //'green'
+        gradient.addColorStop(4 / 6, 'rgba(0,0,255,.3)');       //'blue'
+        gradient.addColorStop(5 / 6, 'rgba(75,0,130,.2)');      //'indigo'
+        gradient.addColorStop(6 / 6, 'rgba(238,130,238,.1)');   //'violet'
+        ctx.beginPath();
+        ctx.fillStyle = gradient;
+        ctx.arc(size, size, dist * 9, 0, 2*Math.PI);
+        ctx.fill();
+    
+        // Draw the planet orbits
+        positions = data.positions;
+        ctx.setLineDash([dist/5,dist/1.5]);
+        var radius = dist;
+        for (let [name, values] of pInfo.entries()) {
+            ctx.setLineDash([radius/12,radius/24]);
+            ctx.beginPath();
+            ctx.arc(size, size, radius, 0, 2*Math.PI);
+            ctx.strokeStyle = values[1];
+            ctx.stroke();
+            radius += dist;
+        }
 
-			// Draw month names, and separators
-			octx.font = '' + (size / 15) + 'px Arial';
-			octx.textAlign = 'center';
-			octx.textBaseline = 'middle';
-			octx.setLineDash([]);
-			octx.strokeStyle = 'rgba(160,160,160,.8)';
-			day = 0;
-			for (let [name, days] of months) {
-				octx.beginPath();
-				octx.moveTo(size, size);
-				p = rotateDays(day, dist * 10, size, size);
-				octx.lineTo(p.x, p.y);
-				for (d = 1; d < days; d += 1) {
-					p = rotateDays(day + d, dist * 9, size, size);
-					octx.moveTo(p.x, p.y);
-					let distance = dist * (d % 7 ? 9.2 : 9.4);
-					p = rotateDays(day + d, distance, size, size);
-					octx.lineTo(p.x, p.y);
-				}
-				octx.stroke();
+        // Draw month names, and separators
+        ctx.font = '' + (size / 15) + 'px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.setLineDash([]);
+        ctx.strokeStyle = 'rgba(160,160,160,.8)';
+        day = 0;
+        for (let [name, days] of months) {
+            ctx.beginPath();
+            ctx.moveTo(size, size);
+            p = rotateDays(day, dist * 10, size, size);
+            ctx.lineTo(p.x, p.y);
+            for (d = 1; d < days; d += 1) {
+                p = rotateDays(day + d, dist * 9, size, size);
+                ctx.moveTo(p.x, p.y);
+                let distance = dist * (d % 7 ? 9.2 : 9.4);
+                p = rotateDays(day + d, distance, size, size);
+                ctx.lineTo(p.x, p.y);
+            }
+            ctx.stroke();
 
-				a = (day + days / 2) * DATE_TO_DEG;
-				txt = getCircularText(name, dist*10*2, -a, 'center', true, true, octx.font, size/15, 0, '#FFFFFF' );
-				octx.drawImage(txt, (width-txt.width)/2, (height-txt.height)/2);
-				day += days;
-			}
-		}
-		else
-			ctx.drawImage(ocanvas, 0, 0);
+            a = (day + days / 2) * DATE_TO_DEG;
+            txt = getCircularText(name, dist*10*2, -a, 'center', true, true, ctx.font, size/15, 0, '#FFFFFF' );
+            ctx.drawImage(txt, (width-txt.width)/2, (height-txt.height)/2);
+            day += days;
+        }
 
     	// Draw the sun
 		let sunSize = dist * .85;
@@ -401,7 +396,7 @@
             tc.style.color = values[1];
 			tc.className = 'name';
             tc = tr.insertCell();
-            tc.textContent = ''+Math.round(positions[name][0], 0)+'&deg;';
+            tc.textContent = Math.round(positions[name][0], 0);
             tc.style.color = values[1];
             tc.className = 'angle';
             tc = tr.insertCell()
