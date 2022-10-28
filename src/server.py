@@ -13,7 +13,7 @@ from orrery import Orrery
 from settings import *
 
 
-REFRESH_QUICK   = .125
+REFRESH_QUICK   = .2
 REFRESH_NORM    = 1.
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',level=logging.ERROR)
