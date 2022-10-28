@@ -561,13 +561,12 @@
 		tr = t.insertRow();
 		cell(tr, "Version", "status_text");
 		cell(tr, data["version"]);
+		cell(tr, '');
 
 		for ([name, key] of fields) {
-			tr = t.insertRow();
-			cell(tr, name);
-
 			value = data.status[key][0];
 			units = data.status[key][1];
+			// Convert values into human readable forms
 			if (value >= 1000)
 				value = value.toLocaleString();
             if (key == 'op_state')
@@ -584,8 +583,9 @@
                     value = 'Clear';
                 }
             }
+			tr = t.insertRow();
+			cell(tr, name);
 			cell(tr, value, "status_value");
-
 			if (units.length)
 				cell(tr, '(' + units + ')');
 			else
