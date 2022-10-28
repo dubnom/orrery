@@ -152,7 +152,6 @@
 		if (confirm("\nUPDATE SOFTWARE\n\nThe orrery needs to be connected to the internet.\nThe orrery will REBOOT!\nForce reload the webpage when finished (about a minute).\n\nAre you sure?"))
 			postData('/api/swupdate');
 	}
-
 </script>
 <script>
 	// Planets, sizes, and colors
@@ -402,7 +401,7 @@
             tc.style.color = values[1];
 			tc.className = 'name';
             tc = tr.insertCell();
-            tc.textContent = Math.round(positions[name][0], 0);
+            tc.textContent = ''+Math.round(positions[name][0], 0)+'&deg;';
             tc.style.color = values[1];
             tc.className = 'angle';
             tc = tr.insertCell()

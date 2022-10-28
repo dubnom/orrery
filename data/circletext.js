@@ -1,3 +1,5 @@
+// From: http://html5graphics.blogspot.com/
+
 function getCircularText(text, diameter, startAngle, align, textInside, inwardFacing, fName, fSize, kerning, color) {
 	// text:         The text to be displayed in circular fashion
 	// diameter:     The diameter of the circle around which the text will
@@ -9,7 +11,7 @@ function getCircularText(text, diameter, startAngle, align, textInside, inwardFa
 	// inwardFacing: true for base of text facing inward. false for outward
 	// fName:        name of font family. Make sure it is loaded
 	// fSize:        size of font family. Don't forget to include units
-	// kearning:     0 for normal gap between letters. positive or
+	// kerning:      0 for normal gap between letters. positive or
 	//               negative number to expand/compact gap in pixels
  //------------------------------------------------------------------------
 
