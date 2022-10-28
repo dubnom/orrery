@@ -220,7 +220,7 @@
     }
 
     function updatePlanetarium(data) {
-		el = document.getElementById("planetarium");
+        el = document.getElementById("planetarium");
 		width = parseFloat(el.style.width);
 		height = parseFloat(el.style.height);
         var c = document.getElementById("planets");
@@ -293,6 +293,10 @@
 			day += days;
 		}
 
+        // Draw the sun
+        let sunSize = dist * .85;
+		ctx.drawImage(sunImage, size-sunSize, size-sunSize, sunSize*2, sunSize*2);
+		
         // Indicate where the earth is in the calendar
         ctx.beginPath();
         ctx.strokeStyle = "rgba(240,240,120,.95)";
@@ -304,10 +308,6 @@
 		ctx.stroke();
         ctx.lineWidth = 1;
 
-        // Draw the sun
-        let sunSize = dist * .85;
-		ctx.drawImage(sunImage, size-sunSize, size-sunSize, sunSize*2, sunSize*2);
-		
         // Draw the planets
         positions = data.positions;
         var radius = dist;
@@ -371,7 +371,6 @@
             }
             ctx.stroke();
         }
-
     }
 
     function updateLocations(data) {
