@@ -11,7 +11,7 @@ from settings import *
 from usage import *
 
 
-VERSION = "1.0"
+VERSION = "1.01 10-28-22"
 
 USAGE_WRITE_PERIOD = 5 * 60     # Number of seconds between file updates
 USAGE_FILE_NAME = "usage.json"
