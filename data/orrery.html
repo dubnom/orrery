@@ -559,8 +559,8 @@
 		t = document.createElement('table');
 		t.className = "status_table";
 		tr = t.insertRow();
-		cell(tr, "Version", "status_text");
-		cell(tr, data["version"]);
+		cell(tr, "Version");
+		cell(tr, data["version"], "status_value");
 		cell(tr, '');
 
 		for ([name, key] of fields) {
