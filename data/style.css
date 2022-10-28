@@ -42,11 +42,12 @@ button {
 
 .status_text {
 	white-space: nowrap;
+	text-align: left;
 }
 
 .status_value {
 	white-space: nowrap;
-	justify-content: right;
+	text-align: right;
 }
 
 #usage_title {
