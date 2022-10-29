@@ -9,9 +9,7 @@ from random import randint, random
 from tic import TicController, T500_CURRENTS, t500_lookupCurrent, TicList
 from settings import *
 from usage import *
-
-
-VERSION = "1.01 10-28-22"
+from version import VERSION
 
 USAGE_WRITE_PERIOD = 5 * 60     # Number of seconds between file updates
 USAGE_FILE_NAME = "usage.json"
