@@ -20,10 +20,12 @@ button {
     border-radius: 10%;
 }
 
-#settings {
-	border: 2px outset yellow;
-	background-color: #222;
-  	text-align: center;
+input {
+    font-size: inherit;
+}
+
+select {
+    font-size: inherit;
 }
 
 #status {

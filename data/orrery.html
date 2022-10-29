@@ -35,14 +35,16 @@
             <div id="mode_settings">
 				<div id="settings">
 					<table id="set_table">
-						<tr><th colspan=2>Orrery Settings</th></tr>
+						<tr><th colspan=2><font size='+2'><u>ORRERY SETTINGS</u></font></th></tr>
+                        <tr><th colspan=2>&nbsp;</th></tr>
 						<tr><td>Speed</td><td><input id="max_speed" type="text"/> (days per second)</td></tr>
 						<tr><td>Current</td><td><input id="current" type="text"/> (amps)</td></tr>
 						<tr><td>Hold Current</td><td><input id="hold_current" type="text"/> (amps)</td></tr>
 						<tr><td>Time zone</td><td><select id="timezone" name="timezone" disabled></select></td></tr>
                         <tr><td>Demo time</td><td><input id="demo_time" type="text"> (minutes)</td></tr>
 
-						<tr><th colspan=2><hr><br>Network Settings</th></tr>
+                        <tr><th colspan=2><br><font size='+2'><u>NETWORK SETTINGS</u></font></th></tr>
+                        <tr><th colspan=2>&nbsp;</th></tr>
 						<tr><td>Startup Mode</td>
 							<td>
 								<input id="wifi_server" type="radio" name="wifi_mode" value="server"><label for="wifi_server">Access Point</label>
@@ -396,7 +398,7 @@
             tc.style.color = values[1];
 			tc.className = 'name';
             tc = tr.insertCell();
-            tc.textContent = Math.round(positions[name][0], 0);
+            tc.innerHTML = Math.round(positions[name][0], 0) + '&deg';
             tc.style.color = values[1];
             tc.className = 'angle';
             tc = tr.insertCell()
@@ -751,13 +753,15 @@
 		setSize("speed_slider", fw, controls_height / 18);
 		setSize("expert_buttons", fw, controls_height / 18, controls_height * .5 / 22);
 
+        // Usage mode layout
+        setSize("usage", fw, controls_height / 4, controls_height / 45);
+
 		// Admin mode layout
 		setSize("admin_buttons", fw, controls_height / 26, controls_height * .5 / 22);
 		setSize("status", fw, controls_height * 7 / 26, controls_height * 1 / 26 * .5);
-		setSize("settings", fw, controls_height * 17 / 26, controls_height * 1 / 26 * .5);
-
-        // Usage mode layout
-        setSize("usage", fw, controls_height / 4, controls_height / 45);
+	
+        // Settings mode layout
+        setSize("settings", fw, controls_height * 25 / 26, controls_height * 1 / 26 * .5);
 	}
 
 	function updateClock(data) {
