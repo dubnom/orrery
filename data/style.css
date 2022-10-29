@@ -29,8 +29,8 @@ select {
 }
 
 #status {
-	border: 2px outset lightgreen;
-	background-color: #181818;
+	_border: 2px outset lightgreen;
+	_background-color: #181818;
 	display: flex;
 	justify-content: center;
 }
@@ -52,7 +52,7 @@ select {
 	text-align: right;
 }
 
-#usage_title {
+#usage_title, #settings_title, #status_title {
     font-family: 'electrolize';
     align-self: center;
     padding: 20px;
@@ -61,8 +61,8 @@ select {
 }
 
 #mode_usage {
-	outline: thick double purple;
-	background-color: #181818;
+	_outline: thick double purple;
+	_background-color: #181818;
 }
 
 #usage {
@@ -107,7 +107,7 @@ select {
 button.large	{background-color: #C55; color: #FFF;}
 button.medium 	{background-color: #AA0; color: #FFF;}
 button.small 	{background-color: #0A0; color: #FFF;}
-button.disabled {background-color: #555; color: #444;}
+button.disabled {background-color: #555; color: #444; opacity: 60%;}
 
 button.halt 		{background-color: #800; color: #FFF;}
 button.deenergize 	{background-color: #F80; color: #000;}
@@ -126,7 +126,7 @@ button.apply 	{background-color: yellow; color: black;}
 	text-align: center;
 }
 
-#admin_buttons {
+#status_buttons {
 	width: 100%;
 	text-align: center;
 }
@@ -185,7 +185,7 @@ button.apply 	{background-color: yellow; color: black;}
     height: 64px;
 }
 
-#icon-admin img {
+#icon-status img {
 	position: absolute;
 	top: 308px;
 	right: 8px;

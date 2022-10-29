@@ -28,23 +28,26 @@
 				</div>
 				<div id="expert_buttons"></div>
 			</div>
-			<div id="mode_admin">
+            <div id="mode_usage">
+                <div id="usage_title">Usage</div>
+                <div id="usage"></div>
+            </div>
+			<div id="mode_status">
+                <div id="status_title">Status</div>
 				<div id="status"></div>
-				<div id="admin_buttons"></div>
+				<div id="status_buttons"></div>
             </div>
             <div id="mode_settings">
 				<div id="settings">
 					<table id="set_table">
-						<tr><th colspan=2><font size='+2'><u>ORRERY SETTINGS</u></font></th></tr>
-                        <tr><th colspan=2>&nbsp;</th></tr>
+						<tr><td colspan=2><div id="settings_title">Orrery Settings</div></td></tr>
 						<tr><td>Speed</td><td><input id="max_speed" type="text"/> (days per second)</td></tr>
 						<tr><td>Current</td><td><input id="current" type="text"/> (amps)</td></tr>
 						<tr><td>Hold Current</td><td><input id="hold_current" type="text"/> (amps)</td></tr>
 						<tr><td>Time zone</td><td><select id="timezone" name="timezone" disabled></select></td></tr>
                         <tr><td>Demo time</td><td><input id="demo_time" type="text"> (minutes)</td></tr>
 
-                        <tr><th colspan=2><br><font size='+2'><u>NETWORK SETTINGS</u></font></th></tr>
-                        <tr><th colspan=2>&nbsp;</th></tr>
+                        <tr><td colspan=2><div id="settings_title">Network Settings</div></td></tr>
 						<tr><td>Startup Mode</td>
 							<td>
 								<input id="wifi_server" type="radio" name="wifi_mode" value="server"><label for="wifi_server">Access Point</label>
@@ -67,17 +70,13 @@
 					</table>
 				</div>
 			</div>
-            <div id="mode_usage">
-                <div id="usage_title">Usage</div>
-                <div id="usage"></div>
-            </div>
 		</div>
 	</div>
 	<div>
 		<div id="icon-orrery"><img src="/data/icon-orbit.png" onclick="setMode('orrery')"></div>
 		<div id="icon-expert"><img src="/data/icon-expert.png" onclick="setMode('expert')"></div>
         <div id="icon-usage"><img src="/data/icon-usage.png" onclick="setMode('usage')"></div>
-		<div id="icon-admin"><img src="/data/icon-admin.png" onclick="setMode('admin')"></div>
+		<div id="icon-status"><img src="/data/icon-status.png" onclick="setMode('status')"></div>
         <div id="icon-settings"><img src="/data/icon-settings.png" onclick="setMode('settings')"></div>
 	</div>
 <script src='/dofonts.js'></script>
@@ -460,7 +459,6 @@
                     if (Math.abs(amt * days) > MAX_DAYS) {
                         butt.className = "disabled";
                         butt.disabled = true;
-                        butt.opacity = '60%';
                     }
 					tc.replaceChildren(butt);
 				}
@@ -471,20 +469,24 @@
 
 	function sliderChange() {
 		var c = document.getElementById("speed");
-		var t = document.getElementById("speed_title");
 		var daysPerSecond = parseInt(c.value);
-		t.innerHTML = 'Speed ' + daysPerSecond + ' (days per second)';
+        updateSliderTitle(daysPerSecond);
 		setSpeed(daysPerSecond);
 	}
 
 	function updateSlider(data) {
 		stepsPerSecond = data.status.max_speed[0];
 		var c = document.getElementById("speed");
-		var t = document.getElementById("speed_title");
+        // FIX: This is hardcoded, should acome from status
 		daysPerSecond = Math.round(88 * (stepsPerSecond / 3200));
 		c.value = daysPerSecond;
-		t.innerHTML = 'Speed ' + daysPerSecond + ' (days per second)';
+        updateSliderTitle(daysPerSecond);
 	}
+
+    function updateSliderTitle(daysPerSecond) {
+		var t = document.getElementById("speed_title");
+		t.innerHTML = 'Speed: ' + daysPerSecond + ' (days/second)';
+    }
 
 	// Create live control buttons
 	function makeButtons(parent, lvl) {
@@ -703,7 +705,7 @@
 		{ 'mode': 'orrery', 'id': 'mode_orrery',	'icon': 'icon-orrery' },
 		{ 'mode': 'expert', 'id': 'mode_expert',	'icon': 'icon-expert' },
         { 'mode': 'usage',  'id': 'mode_usage',     'icon': 'icon-usage' },
-		{ 'mode': 'admin',  'id': 'mode_admin',		'icon': 'icon-admin' },
+		{ 'mode': 'status', 'id': 'mode_status',	'icon': 'icon-status' },
         { 'mode': 'settings', 'id': 'mode_settings','icon': 'icon-settings' }
 	];
 
@@ -756,12 +758,12 @@
         // Usage mode layout
         setSize("usage", fw, controls_height / 4, controls_height / 45);
 
-		// Admin mode layout
-		setSize("admin_buttons", fw, controls_height / 26, controls_height * .5 / 22);
-		setSize("status", fw, controls_height * 7 / 26, controls_height * 1 / 26 * .5);
+		// Status mode layout
+		setSize("status_buttons", fw, controls_height / 26, controls_height * .5 / 22);
+		setSize("status", fw, controls_height * 7 / 26, controls_height / 60);
 	
         // Settings mode layout
-        setSize("settings", fw, controls_height * 25 / 26, controls_height * 1 / 26 * .5);
+        setSize("settings", fw, controls_height * 25 / 26, controls_height / 60);
 	}
 
 	function updateClock(data) {
@@ -836,7 +838,7 @@
 		makeExpertControls();
 		resetDefaultDates();
 		makeButtons("expert_buttons", 1);
-		makeButtons("admin_buttons",  2);
+		makeButtons("status_buttons",  2);
 
 		getTimeZones();
 		getCountries();
