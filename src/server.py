@@ -54,6 +54,11 @@ def get_countries():
 def get_timezones():
     return json.dumps(all_timezones)
 
+@app.get('/currents')
+@app.post('/currents')
+def get_currents():
+    return json.dumps(orrery.getCurrents())
+
 @app.get('/api/planetPositions')
 @app.post('/api/planetPositions')
 def getPlanetPositions():

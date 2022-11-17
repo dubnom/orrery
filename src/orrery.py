@@ -19,6 +19,8 @@ STEPS_PER_ROTATION = 400 * 8
 DAYS_IN_MERCURY_YEAR = 88
 STEPS_PER_DAY = STEPS_PER_ROTATION / DAYS_IN_MERCURY_YEAR
 
+CURRENT_LIMIT = 1.2
+
 planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
 
 epoch = datetime(2018,7,21)
@@ -144,6 +146,9 @@ class Orrery():
 
     def getUsage(self):
         return self._usage
+
+    def getCurrents(self):
+        return list(filter(lambda x:x < CURRENT_LIMIT, T500_CURRENTS))
 
     def shutdown(self):
         self.halt()
