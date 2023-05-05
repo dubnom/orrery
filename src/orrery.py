@@ -196,7 +196,8 @@ class Orrery():
             if self._nowT > self._demoEndT:
                 self._state.state['mode'] = 'now'
             elif self._state.state['state'] == 'stopped':
-                self.moveRelative(1000*365, 'Days')
+                days = (60 * self._settings.settings['demo_time'] / 2) * ((self._settings.settings['maxSpeed'] / 10000) / STEPS_PER_DAY)
+                self.moveRelative(days, 'Days')
                 self._state.state['mode'] = 'demo'
 
     def timeNow(self):
