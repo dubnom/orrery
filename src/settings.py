@@ -1,5 +1,6 @@
 import json
 from json.decoder import JSONDecodeError
+form copy import copy
 import netifaces
 
 SETTINGS_FILENAME = "settings.json"
@@ -32,18 +33,18 @@ class Settings():
 
     def __init__(self, fileName=SETTINGS_FILENAME):
         self._fileName = fileName
+        self.settings = copy(defaults)
         try:
             with open(self._fileName, 'r') as f:
-                self.settings = json.load(f)
+                self.settings.update(json.load(f))
         except (FileNotFoundError, JSONDecodeError):
-            self.reset()
+            pass
+
+    def reset(self):
+        self.set(copy(defaults))
 
     def set(self, settings):
         self.settings.update(settings)
-        self._save()
-
-    def reset(self):
-        self.settings = defaults
         self._save()
 
     def _save(self):
