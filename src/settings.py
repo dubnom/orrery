@@ -1,6 +1,6 @@
 import json
 from json.decoder import JSONDecodeError
-form copy import copy
+from copy import copy
 import netifaces
 
 SETTINGS_FILENAME = "settings.json"
